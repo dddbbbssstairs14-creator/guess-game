@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Угадай число</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg: var(--tg-theme-bg-color, #ffffff);
+            --text: var(--tg-theme-text-color, #000000);
+            --hint: var(--tg-theme-hint-color, #999999);
+            --btn: var(--tg-theme-button-color, #2481cc);
+            --btn-text: var(--tg-theme-button-text-color, #ffffff);
+            --secondary-bg: var(--tg-theme-secondary-bg-color, #f0f0f0);
+        }
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .container {
+            width: 100%;
+            max-width: 320px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        p {
+            color: var(--hint);
+            font-size: 14px;
+            margin-bottom: 24px;
+            min-height: 40px;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            text-align: center;
+            border: 2px solid var(--secondary-bg);
+            border-radius: 12px;
+            background: var(--secondary-bg);
+            color: var(--text);
+            box-sizing: border-box;
+            outline: none;
+            margin-bottom: 12px;
+        }
+        input:focus {
+            border-color: var(--btn);
+        }
+        button {
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            background-color: var(--btn);
+            color: var(--btn-text);
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        button:active {
+            opacity: 0.8;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .reset-btn {
+            background-color: transparent;
+            color: var(--hint);
+            margin-top: 16px;
+            font-size: 14px;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔢 Угадай число</h1>
+        <p id="message">Я загадал число от 1 до 100. Попробуй угадать!</p>
+        <input type="number" id="guessInput" placeholder="Твоё число" min="1" max="100">
+        <button id="guessBtn">Проверить</button>
+        <button id="resetBtn" class="reset-btn" style="display: none;">Играть снова</button>
+    </div>
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        let secretNumber = Math.floor(Math.random() * 100) + 1;
+        let attempts = 0;
+        let gameOver = false;
+
+        const messageEl = document.getElementById('message');
+        const inputEl = document.getElementById('guessInput');
+        const guessBtn = document.getElementById('guessBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        function updateMessage(text) {
+            messageEl.textContent = text;
+        }
+
+        function checkGuess() {
+            if (gameOver) return;
+            
+            const guess = parseInt(inputEl.value);
+            if (isNaN(guess) || guess < 1 || guess > 100) {
+                updateMessage('Введи число от 1 до 100!');
+                return;
+            }
+
+            attempts++;
+            
+            if (guess === secretNumber) {
+                updateMessage(`🎉 Угадал! Это число ${secretNumber}. Попыток: ${attempts}`);
+                gameOver = true;
+                guessBtn.disabled = true;
+                inputEl.disabled = true;
+                resetBtn.style.display = 'block';
+                tg.HapticFeedback.notificationOccurred('success');
+            } else if (guess < secretNumber) {
+                updateMessage(`📈 Больше! (Попытка ${attempts})`);
+                tg.HapticFeedback.impactOccurred('light');
+            } else {
+                updateMessage(`📉 Меньше! (Попытка ${attempts})`);
+                tg.HapticFeedback.impactOccurred('light');
+            }
+            
+            inputEl.value = '';
+            inputEl.focus();
+        }
+
+        function resetGame() {
+            secretNumber = Math.floor(Math.random() * 100) + 1;
+            attempts = 0;
+            gameOver = false;
+            inputEl.disabled = false;
+            guessBtn.disabled = false;
+            resetBtn.style.display = 'none';
+            inputEl.value = '';
+            updateMessage('Я загадал число от 1 до 100. Попробуй угадать!');
+            inputEl.focus();
+        }
+
+        guessBtn.addEventListener('click', checkGuess);
+        resetBtn.addEventListener('click', resetGame);
+        inputEl.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkGuess();
+        });
+    </script>
+</body>
+</html>
