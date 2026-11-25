@@ -3,113 +3,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Бургер Тайкун</title>
+    <title>PIXEL Cyber Cafe</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg: var(--tg-theme-bg-color, #1a1a1a);
-            --text: var(--tg-theme-text-color, #ffffff);
-            --hint: var(--tg-theme-hint-color, #aaaaaa);
-            --btn: var(--tg-theme-button-color, #e67e22);
+            --bg: var(--tg-theme-bg-color, #f2f2f7);
+            --text: var(--tg-theme-text-color, #000000);
+            --hint: var(--tg-theme-hint-color, #8e8e93);
+            --btn: var(--tg-theme-button-color, #007aff);
             --btn-text: var(--tg-theme-button-text-color, #ffffff);
-            --card: var(--tg-theme-secondary-bg-color, #2a2a2a);
-            --border: #444;
+            --card: var(--tg-theme-secondary-bg-color, #ffffff);
+            --border: #e5e5ea;
+            --green: #34c759;
+            --red: #ff3b30;
+            --orange: #ff9500;
         }
         body {
             margin: 0;
-            padding: 10px;
+            padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden;
             box-sizing: border-box;
         }
-        .container { width: 100%; max-width: 400px; }
         
-        .header {
-            background: var(--card);
+        /* Верхняя панель */
+        .top-bar {
             padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-        .balance { font-size: 32px; font-weight: bold; color: #2ecc71; }
-        .info { font-size: 14px; color: var(--hint); margin-top: 5px; }
-        
-        .log {
-            background: #111;
-            height: 80px;
-            overflow-y: auto;
-            border-radius: 8px;
-            padding: 10px;
-            font-size: 12px;
-            margin-bottom: 10px;
-            border: 1px solid var(--border);
-            font-family: monospace;
-        }
-        .log p { margin: 2px 0; }
-        
-        .section-title { font-size: 16px; margin: 15px 0 5px 0; font-weight: bold; border-bottom: 1px solid var(--border); padding-bottom: 5px;}
-        
-        button {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 8px;
-            border: none;
-            border-radius: 8px;
-            background-color: var(--btn);
-            color: var(--btn-text);
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: opacity 0.2s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            z-index: 10;
         }
-        button:disabled { opacity: 0.5; }
-        button.secondary { background-color: #3498db; }
-        button.danger { background-color: #e74c3c; }
-        button.success { background-color: #2ecc71; color: #111; }
+        .logo { font-size: 20px; font-weight: 800; color: var(--btn); letter-spacing: 1px; }
+        .date-box { font-size: 14px; font-weight: 600; color: var(--hint); }
+        .balance-box { text-align: right; }
+        .balance-label { font-size: 10px; color: var(--hint); text-transform: uppercase; }
+        .balance-val { font-size: 20px; font-weight: bold; color: var(--green); }
+
+        /* Контентная часть */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            padding-bottom: 80px;
+        }
+        .tab { display: none; }
+        .tab.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Карточки */
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+        }
+        .card-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; justify-content: space-between; }
+        .card-desc { font-size: 13px; color: var(--hint); line-height: 1.4; margin-bottom: 15px; }
         
-        .btn-price { background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px; font-size: 12px; }
-        .item-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 5px; color: var(--hint); }
+        /* Прогресс-бары (Характеристики) */
+        .stat-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
+        .stat-label { width: 100px; font-weight: 500; }
+        .stat-bar-bg { flex: 1; height: 8px; background: var(--border); border-radius: 4px; margin: 0 10px; overflow: hidden; }
+        .stat-bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+        .stat-val { width: 30px; text-align: right; font-weight: bold; }
+        
+        .bg-green { background: var(--green); }
+        .bg-orange { background: var(--orange); }
+        .bg-red { background: var(--red); }
+        .bg-blue { background: var(--btn); }
+
+        /* Кнопки */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: var(--btn);
+            color: var(--btn-text);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            margin-bottom: 10px;
+        }
+        .btn:active { opacity: 0.8; }
+        .btn-outline { background: transparent; color: var(--btn); border: 2px solid var(--btn); }
+        .btn-green { background: var(--green); color: white; }
+        .btn-red { background: var(--red); color: white; }
+
+        /* Главная кнопка "Открыть день" */
+        .big-action-btn {
+            background: linear-gradient(135deg, #007aff, #00c6ff);
+            color: white;
+            font-size: 18px;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 122, 255, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 20px;
+        }
+
+        /* Нижнее меню */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: var(--card);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            padding-bottom: env(safe-area-inset-bottom);
+            z-index: 10;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: var(--hint);
+            cursor: pointer;
+            transition: color 0.2s;
+            width: 20%;
+        }
+        .nav-icon { font-size: 22px; margin-bottom: 4px; }
+        .nav-item.active { color: var(--btn); font-weight: 600; }
+
+        /* Модальное окно (События) */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5); display: none;
+            justify-content: center; align-items: center; z-index: 100;
+            padding: 20px;
+        }
+        .modal-content {
+            background: var(--card); border-radius: 20px; padding: 20px;
+            width: 100%; max-width: 350px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-title { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
+        .modal-text { font-size: 14px; color: var(--text); margin-bottom: 20px; }
+        
+        .list-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 0; border-bottom: 1px solid var(--border);
+        }
+        .list-item:last-child { border-bottom: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="balance" id="money">0 ₽</div>
-            <div class="info" id="status">Статус: Гараж (Лимит: 5)</div>
-            <div class="info" id="equipment">Оборудование: 1 / 5</div>
+    <!-- Верхняя панель -->
+    <div class="top-bar">
+        <div class="logo">PIXEL</div>
+        <div class="date-box" id="dateDisplay">День 1 · Пн</div>
+        <div class="balance-box">
+            <div class="balance-label">На счету</div>
+            <div class="balance-val" id="balanceDisplay">50 000 ₽</div>
         </div>
+    </div>
 
-        <div class="log" id="log"></div>
-
-        <div class="section-title">Управление</div>
-        <button id="btnClick" class="success">Пожарить котлету (Клик) <span>+10 ₽</span></button>
-
-        <div class="section-title">Магазин</div>
-        <button id="buyGrill">Купить гриль <span class="btn-price" id="priceGrill">100 ₽</span></button>
-        <button id="buyCashier" class="secondary">Нанять кассира <span class="btn-price" id="priceCashier">250 ₽</span></button>
-        <button id="buyWaiter" class="secondary">Нанять официанта <span class="btn-price" id="priceWaiter">500 ₽</span></button>
-        <button id="buyAd" class="secondary">Запустить рекламу <span class="btn-price" id="priceAd">1000 ₽</span></button>
+    <!-- Контент -->
+    <div class="content">
         
-        <div class="section-title">Недвижимость и Финансы</div>
-        <button id="buyBuilding" class="danger">Выкупить помещение <span class="btn-price" id="priceBuilding">50000 ₽</span></button>
-        <button id="takeLoan" class="danger">Взять кредит (10000 ₽) <span class="btn-price">Долг: 0 ₽</span></button>
+        <!-- Вкладка Клуб -->
+        <div id="tab-club" class="tab active">
+            <div class="card">
+                <div class="card-title">Статус клуба <span style="color:var(--orange)">⭐⭐⭐☆☆</span></div>
+                <div class="card-desc">Ваш клуб пока не может похвастаться большой славой, но всё впереди!</div>
+                
+                <div class="stat-row">
+                    <div class="stat-label">Цена (₽/ч)</div>
+                    <div class="stat-bar-bg"><div class="stat-bar-fill bg-blue" style="width: 50%"></div></div>
+                    <div class="stat-val">150</div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-label">Чистота</div>
+                    <div class="stat-bar-bg"><div class="stat-bar-fill bg-green" style="width: 80%"></div></div>
+                    <div class="stat-val">80</div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-label">Техника</div>
+                    <div class="stat-bar-bg"><div class="stat-bar-fill bg-orange" style="width: 40%"></div></div>
+                    <div class="stat-val">40</div>
+                </div>
+            </div>
 
-        <div class="item-row" style="margin-top:20px;">
-            <span>Кассиры: <b id="countCashier">0</b></span>
-            <span>Официанты: <b id="countWaiter">0</b></span>
+            <div class="card">
+                <div class="card-title">Действия</div>
+                <button class="btn btn-outline" onclick="showModal('Уборка', 'Вы вызвали клининг. Чистота повышена!', 'Отлично')">Провести уборку (1 000 ₽)</button>
+                <button class="btn btn-outline" onclick="showModal('Ремонт', 'Техник починил ПК. Техника в норме!', 'Отлично')">Починить ПК (5 000 ₽)</button>
+            </div>
+
+            <button class="btn big-action-btn" onclick="nextDay()">Открыть день</button>
         </div>
-        <div class="item-row">
-            <span>Кредит: <b id="loanDisplay">0 ₽</b></span>
-            <span>Реклама: <b id="adTimer">Не активна</b></span>
+
+        <!-- Вкладка Сеть -->
+        <div id="tab-network" class="tab">
+            <div class="card">
+                <div class="card-title">Оборудование</div>
+                <div class="list-item">
+                    <div>
+                        <div style="font-weight: 600;">Игровой ПК</div>
+                        <div style="font-size: 12px; color: var(--hint);">Состояние: 100%</div>
+                    </div>
+                    <div style="font-weight: bold; color: var(--btn);">5 шт.</div>
+                </div>
+                <div class="list-item">
+                    <div>
+                        <div style="font-weight: 600;">VIP-Кабина</div>
+                        <div style="font-size: 12px; color: var(--hint);">Состояние: 100%</div>
+                    </div>
+                    <div style="font-weight: bold; color: var(--btn);">1 шт.</div>
+                </div>
+            </div>
+            <button class="btn" onclick="showModal('Магазин', 'Здесь скоро можно будет купить новые ПК!', 'Ок')">Купить ПК</button>
+        </div>
+
+        <!-- Вкладка Люди -->
+        <div id="tab-people" class="tab">
+            <div class="card">
+                <div class="card-title">Персонал</div>
+                <div class="list-item">
+                    <div>
+                        <div style="font-weight: 600;">Соня (Админ)</div>
+                        <div style="font-size: 12px; color: var(--hint);">Оклад: 30 000 ₽ / мес</div>
+                    </div>
+                    <button style="background:var(--red); color:white; border:none; padding:8px 12px; border-radius:8px;">Уволить</button>
+                </div>
+                <div class="list-item">
+                    <div>
+                        <div style="font-weight: 600;">Артём (Охранник)</div>
+                        <div style="font-size: 12px; color: var(--hint);">Оклад: 40 000 ₽ / мес</div>
+                    </div>
+                    <button style="background:var(--red); color:white; border:none; padding:8px 12px; border-radius:8px;">Уволить</button>
+                </div>
+            </div>
+            <button class="btn" onclick="showModal('Найм', 'Скоро здесь можно будет искать новых сотрудников!', 'Ок')">Нанять сотрудника</button>
+        </div>
+
+        <!-- Вкладка Деньги -->
+        <div id="tab-money" class="tab">
+            <div class="card">
+                <div class="card-title">Кредиты и Финансы</div>
+                <div class="card-desc">Взять кредит под 10% в день. Будьте осторожны, коллекторы не дремлют!</div>
+                <button class="btn btn-green" onclick="takeLoan()">Взять кредит 100 000 ₽</button>
+                <button class="btn btn-red" onclick="showModal('Ошибка', 'У вас нет активных кредитов.', 'Ок')">Погасить кредит</button>
+            </div>
+        </div>
+
+        <!-- Вкладка Ещё -->
+        <div id="tab-more" class="tab">
+            <div class="card">
+                <div class="card-title">Настройки и Инфо</div>
+                <div class="list-item"><div>Версия игры</div><div style="color:var(--hint)">1.0 (Beta)</div></div>
+                <div class="list-item"><div>Сбросить прогресс</div><button style="background:var(--red); color:white; border:none; padding:8px 12px; border-radius:8px;">Сброс</button></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Нижнее меню -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('club', this)">
+            <div class="nav-icon">🎮</div><div>Клуб</div>
+        </div>
+        <div class="nav-item" onclick="switchTab('network', this)">
+            <div class="nav-icon">💻</div><div>Сеть</div>
+        </div>
+        <div class="nav-item" onclick="switchTab('people', this)">
+            <div class="nav-icon">👥</div><div>Люди</div>
+        </div>
+        <div class="nav-item" onclick="switchTab('money', this)">
+            <div class="nav-icon">💰</div><div>Деньги</div>
+        </div>
+        <div class="nav-item" onclick="switchTab('more', this)">
+            <div class="nav-icon">⚙️</div><div>Ещё</div>
+        </div>
+    </div>
+
+    <!-- Модальное окно -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <div class="modal-title" id="modalTitle">Заголовок</div>
+            <div class="modal-text" id="modalText">Текст</div>
+            <button class="btn" id="modalBtn" onclick="closeModal()">Ок</button>
         </div>
     </div>
 
@@ -118,220 +311,75 @@
         tg.ready();
         tg.expand();
 
-        // Инициализация состояния
+        // Базовое состояние
         let state = {
-            money: 50,
-            grills: 1,
-            cashiers: 0,
-            waiters: 0,
-            buildingOwned: false,
-            loan: 0,
-            adActive: false,
-            adEndTime: 0,
-            adBoost: 0,
-            priceGrill: 100,
-            priceCashier: 250,
-            priceWaiter: 500,
-            priceAd: 1000,
-            priceBuilding: 50000,
-            maxEquipment: 5,
-            incomePerClick: 10
+            day: 1,
+            money: 50000,
+            loan: 0
         };
 
-        // Загрузка сохранения
-        if (localStorage.getItem('burgerTycoon')) {
-            const saved = JSON.parse(localStorage.getItem('burgerTycoon'));
-            state = { ...state, ...saved };
-            // Сброс рекламы при перезапуске, если она была
-            if (state.adActive && Date.now() > state.adEndTime) {
-                state.adActive = false;
-                state.adBoost = 0;
-            }
+        // Загрузка
+        if (localStorage.getItem('pixelGame')) {
+            state = JSON.parse(localStorage.getItem('pixelGame'));
         }
-
-        // DOM элементы
-        const ui = {
-            money: document.getElementById('money'),
-            status: document.getElementById('status'),
-            equipment: document.getElementById('equipment'),
-            log: document.getElementById('log'),
-            priceGrill: document.getElementById('priceGrill'),
-            priceCashier: document.getElementById('priceCashier'),
-            priceWaiter: document.getElementById('priceWaiter'),
-            priceAd: document.getElementById('priceAd'),
-            priceBuilding: document.getElementById('priceBuilding'),
-            countCashier: document.getElementById('countCashier'),
-            countWaiter: document.getElementById('countWaiter'),
-            loanDisplay: document.getElementById('loanDisplay'),
-            adTimer: document.getElementById('adTimer')
-        };
 
         function formatMoney(amount) {
             return Math.floor(amount).toLocaleString('ru-RU') + ' ₽';
         }
 
-        function addLog(text) {
-            const p = document.createElement('p');
-            p.textContent = `> ${text}`;
-            ui.log.prepend(p);
-            if (ui.log.children.length > 15) ui.log.lastChild.remove();
-        }
-
         function updateUI() {
-            ui.money.textContent = formatMoney(state.money);
-            ui.status.textContent = state.buildingOwned ? "Статус: Собственное помещение" : `Статус: Гараж (Лимит: ${state.maxEquipment})`;
-            ui.equipment.textContent = `Оборудование: ${state.grills} / ${state.buildingOwned ? '∞' : state.maxEquipment}`;
-            
-            ui.priceGrill.textContent = formatMoney(state.priceGrill);
-            ui.priceCashier.textContent = formatMoney(state.priceCashier);
-            ui.priceWaiter.textContent = formatMoney(state.priceWaiter);
-            ui.priceAd.textContent = formatMoney(state.priceAd);
-            ui.priceBuilding.textContent = formatMoney(state.priceBuilding);
-            
-            ui.countCashier.textContent = state.cashiers;
-            ui.countWaiter.textContent = state.waiters;
-            ui.loanDisplay.textContent = formatMoney(state.loan);
-
-            // Блокировка кнопок
-            document.getElementById('buyGrill').disabled = state.money < state.priceGrill || (!state.buildingOwned && state.grills >= state.maxEquipment);
-            document.getElementById('buyCashier').disabled = state.money < state.priceCashier;
-            document.getElementById('buyWaiter').disabled = state.money < state.priceWaiter;
-            document.getElementById('buyAd').disabled = state.money < state.priceAd || state.adActive;
-            document.getElementById('buyBuilding').disabled = state.money < state.priceBuilding || state.buildingOwned;
-            document.getElementById('takeLoan').disabled = state.loan > 0;
-
-            // Таймер рекламы
-            if (state.adActive) {
-                const left = Math.ceil((state.adEndTime - Date.now()) / 1000);
-                if (left > 0) {
-                    ui.adTimer.textContent = `Активна (${left}с)`;
-                    ui.adTimer.style.color = '#f1c40f';
-                } else {
-                    state.adActive = false;
-                    state.adBoost = 0;
-                    ui.adTimer.textContent = 'Закончилась';
-                    ui.adTimer.style.color = 'var(--hint)';
-                    addLog("📢 Реклама закончилась. Поток клиентов спал.");
-                }
-            } else {
-                if (!state.adActive) ui.adTimer.textContent = 'Не активна';
-                ui.adTimer.style.color = 'var(--hint)';
-            }
+            document.getElementById('balanceDisplay').textContent = formatMoney(state.money);
+            document.getElementById('dateDisplay').textContent = `День ${state.day} · Пн`;
         }
 
-        // Логика Клиентов (Тик)
-        setInterval(() => {
-            // Доход от официантов (пассивный)
-            if (state.waiters > 0) {
-                let waiterIncome = state.waiters * 5;
-                if (state.adActive) waiterIncome *= 2;
-                state.money += waiterIncome;
-            }
-
-            // Обработка кредита (списываем 2% каждые 5 секунд)
-            if (state.loan > 0) {
-                let interest = Math.ceil(state.loan * 0.02);
-                state.money -= interest;
-                if (state.money < 0) state.money = 0;
-            }
-
-            updateUI();
-        }, 5000);
-
-        // Приход клиентов (каждые 3 секунды)
-        setInterval(() => {
-            let chance = 0.3; // Базовый шанс
-            if (state.adActive) chance += 0.5; // Реклама сильно бустит
-            
-            if (Math.random() < chance) {
-                let clients = 1 + Math.floor(Math.random() * state.grills);
-                let income = clients * 15;
-                let tip = state.cashiers * 5; // Кассиры ускоряют, официанты дают чаевые
-
-                state.money += income + tip;
-                addLog(`🍔 Пришло клиентов: ${clients}. Выручка: +${income + tip} ₽`);
-                
-                // Шанс на бандитов (10%)
-                if (Math.random() < 0.1 && state.money > 1000) {
-                    let racket = Math.floor(state.money * 0.2);
-                    if (state.loan === 0) { // Бандиты не трогают, если уже есть кредит
-                        state.money -= racket;
-                        addLog(`🚨 Бандиты! Отдал ${racket} ₽ за "крышу".`);
-                        tg.HapticFeedback.notificationOccurred('error');
-                    }
-                }
-            }
-            updateUI();
-        }, 3000);
-
-        // Обработчики кнопок
-        document.getElementById('btnClick').addEventListener('click', () => {
-            state.money += state.incomePerClick;
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            el.classList.add('active');
             tg.HapticFeedback.impactOccurred('light');
-            updateUI();
-        });
+        }
 
-        document.getElementById('buyGrill').addEventListener('click', () => {
-            state.money -= state.priceGrill;
-            state.grills++;
-            state.priceGrill = Math.floor(state.priceGrill * 1.5);
-            addLog(`🔥 Куплен новый гриль! Всего: ${state.grills}`);
-            save(); updateUI();
-        });
+        function showModal(title, text, btnText) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalText').textContent = text;
+            document.getElementById('modalBtn').textContent = btnText;
+            document.getElementById('modal').style.display = 'flex';
+        }
 
-        document.getElementById('buyCashier').addEventListener('click', () => {
-            state.money -= state.priceCashier;
-            state.cashiers++;
-            state.priceCashier = Math.floor(state.priceCashier * 1.4);
-            addLog(`👨‍💼 Нанят кассир! Теперь их: ${state.cashiers}`);
-            save(); updateUI();
-        });
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
 
-        document.getElementById('buyWaiter').addEventListener('click', () => {
-            state.money -= state.priceWaiter;
-            state.waiters++;
-            state.priceWaiter = Math.floor(state.priceWaiter * 1.6);
-            addLog(`🏃 Нанят официант! Теперь их: ${state.waiters}`);
-            save(); updateUI();
-        });
-
-        document.getElementById('buyAd').addEventListener('click', () => {
-            state.money -= state.priceAd;
-            state.adActive = true;
-            state.adEndTime = Date.now() + 30000; // 30 секунд
-            state.adBoost = 1;
-            addLog(`📢 Запущена реклама! Ждем клиентов 30 секунд...`);
+        function nextDay() {
+            state.day++;
+            // Имитация дохода за день
+            let income = Math.floor(Math.random() * 10000) + 15000;
+            state.money += income;
+            
             tg.HapticFeedback.notificationOccurred('success');
-            save(); updateUI();
-        });
+            showModal('День завершен', `Пришло гостей: 15\nВыручка: +${formatMoney(income)}\nЗатраты: -5 000 ₽ (Аренда)`, 'Далее');
+            state.money -= 5000;
+            
+            save();
+            updateUI();
+        }
 
-        document.getElementById('buyBuilding').addEventListener('click', () => {
-            if(confirm("Вы уверены, что хотите выкупить помещение за 50 000 ₽?")) {
-                state.money -= state.priceBuilding;
-                state.buildingOwned = true;
-                addLog(`🏢 ПОЗДРАВЛЯЮ! Вы выкупили помещение. Лимиты сняты!`);
-                tg.HapticFeedback.notificationOccurred('success');
-                save(); updateUI();
-            }
-        });
-
-        document.getElementById('takeLoan').addEventListener('click', () => {
-            state.money += 10000;
-            state.loan = 15000; // Долг больше, чем берем (проценты)
-            addLog(`🏦 Взят кредит 10 000 ₽. Вы должны 15 000 ₽ (гасится автоматически).`);
-            save(); updateUI();
-        });
+        function takeLoan() {
+            state.money += 100000;
+            state.loan += 120000;
+            tg.HapticFeedback.notificationOccurred('warning');
+            showModal('Кредит взят', 'Вы получили 100 000 ₽. Ваш долг теперь 120 000 ₽.', 'Понятно');
+            save();
+            updateUI();
+        }
 
         function save() {
-            localStorage.setItem('burgerTycoon', JSON.stringify(state));
+            localStorage.setItem('pixelGame', JSON.stringify(state));
         }
 
-        // Сохраняем каждые 5 секунд
-        setInterval(save, 5000);
-
-        // Первичный запуск
-        addLog("Добро пожаловать в Бургер Тайкун!");
+        // Инициализация
         updateUI();
     </script>
 </body>
-</html>
+    </html>
