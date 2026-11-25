@@ -3,164 +3,335 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Угадай число</title>
+    <title>Бургер Тайкун</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg: var(--tg-theme-bg-color, #ffffff);
-            --text: var(--tg-theme-text-color, #000000);
-            --hint: var(--tg-theme-hint-color, #999999);
-            --btn: var(--tg-theme-button-color, #2481cc);
+            --bg: var(--tg-theme-bg-color, #1a1a1a);
+            --text: var(--tg-theme-text-color, #ffffff);
+            --hint: var(--tg-theme-hint-color, #aaaaaa);
+            --btn: var(--tg-theme-button-color, #e67e22);
             --btn-text: var(--tg-theme-button-text-color, #ffffff);
-            --secondary-bg: var(--tg-theme-secondary-bg-color, #f0f0f0);
+            --card: var(--tg-theme-secondary-bg-color, #2a2a2a);
+            --border: #444;
         }
         body {
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
             box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
         }
-        .container {
-            width: 100%;
-            max-width: 320px;
-            text-align: center;
-        }
-        h1 {
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-        p {
-            color: var(--hint);
-            font-size: 14px;
-            margin-bottom: 24px;
-            min-height: 40px;
-        }
-        input {
-            width: 100%;
-            padding: 14px;
-            font-size: 18px;
-            text-align: center;
-            border: 2px solid var(--secondary-bg);
+        .container { width: 100%; max-width: 400px; }
+        
+        .header {
+            background: var(--card);
+            padding: 15px;
             border-radius: 12px;
-            background: var(--secondary-bg);
-            color: var(--text);
-            box-sizing: border-box;
-            outline: none;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
-        input:focus {
-            border-color: var(--btn);
+        .balance { font-size: 32px; font-weight: bold; color: #2ecc71; }
+        .info { font-size: 14px; color: var(--hint); margin-top: 5px; }
+        
+        .log {
+            background: #111;
+            height: 80px;
+            overflow-y: auto;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 12px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border);
+            font-family: monospace;
         }
+        .log p { margin: 2px 0; }
+        
+        .section-title { font-size: 16px; margin: 15px 0 5px 0; font-weight: bold; border-bottom: 1px solid var(--border); padding-bottom: 5px;}
+        
         button {
             width: 100%;
-            padding: 16px;
-            font-size: 16px;
-            font-weight: 600;
+            padding: 12px;
+            margin-bottom: 8px;
             border: none;
-            border-radius: 12px;
+            border-radius: 8px;
             background-color: var(--btn);
             color: var(--btn-text);
+            font-weight: bold;
+            font-size: 14px;
             cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             transition: opacity 0.2s;
         }
-        button:active {
-            opacity: 0.8;
-        }
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .reset-btn {
-            background-color: transparent;
-            color: var(--hint);
-            margin-top: 16px;
-            font-size: 14px;
-            padding: 8px;
-        }
+        button:disabled { opacity: 0.5; }
+        button.secondary { background-color: #3498db; }
+        button.danger { background-color: #e74c3c; }
+        button.success { background-color: #2ecc71; color: #111; }
+        
+        .btn-price { background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+        .item-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 5px; color: var(--hint); }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔢 Угадай число</h1>
-        <p id="message">Я загадал число от 1 до 100. Попробуй угадать!</p>
-        <input type="number" id="guessInput" placeholder="Твоё число" min="1" max="100">
-        <button id="guessBtn">Проверить</button>
-        <button id="resetBtn" class="reset-btn" style="display: none;">Играть снова</button>
+        <div class="header">
+            <div class="balance" id="money">0 ₽</div>
+            <div class="info" id="status">Статус: Гараж (Лимит: 5)</div>
+            <div class="info" id="equipment">Оборудование: 1 / 5</div>
+        </div>
+
+        <div class="log" id="log"></div>
+
+        <div class="section-title">Управление</div>
+        <button id="btnClick" class="success">Пожарить котлету (Клик) <span>+10 ₽</span></button>
+
+        <div class="section-title">Магазин</div>
+        <button id="buyGrill">Купить гриль <span class="btn-price" id="priceGrill">100 ₽</span></button>
+        <button id="buyCashier" class="secondary">Нанять кассира <span class="btn-price" id="priceCashier">250 ₽</span></button>
+        <button id="buyWaiter" class="secondary">Нанять официанта <span class="btn-price" id="priceWaiter">500 ₽</span></button>
+        <button id="buyAd" class="secondary">Запустить рекламу <span class="btn-price" id="priceAd">1000 ₽</span></button>
+        
+        <div class="section-title">Недвижимость и Финансы</div>
+        <button id="buyBuilding" class="danger">Выкупить помещение <span class="btn-price" id="priceBuilding">50000 ₽</span></button>
+        <button id="takeLoan" class="danger">Взять кредит (10000 ₽) <span class="btn-price">Долг: 0 ₽</span></button>
+
+        <div class="item-row" style="margin-top:20px;">
+            <span>Кассиры: <b id="countCashier">0</b></span>
+            <span>Официанты: <b id="countWaiter">0</b></span>
+        </div>
+        <div class="item-row">
+            <span>Кредит: <b id="loanDisplay">0 ₽</b></span>
+            <span>Реклама: <b id="adTimer">Не активна</b></span>
+        </div>
     </div>
+
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
 
-        let secretNumber = Math.floor(Math.random() * 100) + 1;
-        let attempts = 0;
-        let gameOver = false;
+        // Инициализация состояния
+        let state = {
+            money: 50,
+            grills: 1,
+            cashiers: 0,
+            waiters: 0,
+            buildingOwned: false,
+            loan: 0,
+            adActive: false,
+            adEndTime: 0,
+            adBoost: 0,
+            priceGrill: 100,
+            priceCashier: 250,
+            priceWaiter: 500,
+            priceAd: 1000,
+            priceBuilding: 50000,
+            maxEquipment: 5,
+            incomePerClick: 10
+        };
 
-        const messageEl = document.getElementById('message');
-        const inputEl = document.getElementById('guessInput');
-        const guessBtn = document.getElementById('guessBtn');
-        const resetBtn = document.getElementById('resetBtn');
-
-        function updateMessage(text) {
-            messageEl.textContent = text;
+        // Загрузка сохранения
+        if (localStorage.getItem('burgerTycoon')) {
+            const saved = JSON.parse(localStorage.getItem('burgerTycoon'));
+            state = { ...state, ...saved };
+            // Сброс рекламы при перезапуске, если она была
+            if (state.adActive && Date.now() > state.adEndTime) {
+                state.adActive = false;
+                state.adBoost = 0;
+            }
         }
 
-        function checkGuess() {
-            if (gameOver) return;
-            
-            const guess = parseInt(inputEl.value);
-            if (isNaN(guess) || guess < 1 || guess > 100) {
-                updateMessage('Введи число от 1 до 100!');
-                return;
-            }
+        // DOM элементы
+        const ui = {
+            money: document.getElementById('money'),
+            status: document.getElementById('status'),
+            equipment: document.getElementById('equipment'),
+            log: document.getElementById('log'),
+            priceGrill: document.getElementById('priceGrill'),
+            priceCashier: document.getElementById('priceCashier'),
+            priceWaiter: document.getElementById('priceWaiter'),
+            priceAd: document.getElementById('priceAd'),
+            priceBuilding: document.getElementById('priceBuilding'),
+            countCashier: document.getElementById('countCashier'),
+            countWaiter: document.getElementById('countWaiter'),
+            loanDisplay: document.getElementById('loanDisplay'),
+            adTimer: document.getElementById('adTimer')
+        };
 
-            attempts++;
+        function formatMoney(amount) {
+            return Math.floor(amount).toLocaleString('ru-RU') + ' ₽';
+        }
+
+        function addLog(text) {
+            const p = document.createElement('p');
+            p.textContent = `> ${text}`;
+            ui.log.prepend(p);
+            if (ui.log.children.length > 15) ui.log.lastChild.remove();
+        }
+
+        function updateUI() {
+            ui.money.textContent = formatMoney(state.money);
+            ui.status.textContent = state.buildingOwned ? "Статус: Собственное помещение" : `Статус: Гараж (Лимит: ${state.maxEquipment})`;
+            ui.equipment.textContent = `Оборудование: ${state.grills} / ${state.buildingOwned ? '∞' : state.maxEquipment}`;
             
-            if (guess === secretNumber) {
-                updateMessage(`🎉 Угадал! Это число ${secretNumber}. Попыток: ${attempts}`);
-                gameOver = true;
-                guessBtn.disabled = true;
-                inputEl.disabled = true;
-                resetBtn.style.display = 'block';
-                tg.HapticFeedback.notificationOccurred('success');
-            } else if (guess < secretNumber) {
-                updateMessage(`📈 Больше! (Попытка ${attempts})`);
-                tg.HapticFeedback.impactOccurred('light');
+            ui.priceGrill.textContent = formatMoney(state.priceGrill);
+            ui.priceCashier.textContent = formatMoney(state.priceCashier);
+            ui.priceWaiter.textContent = formatMoney(state.priceWaiter);
+            ui.priceAd.textContent = formatMoney(state.priceAd);
+            ui.priceBuilding.textContent = formatMoney(state.priceBuilding);
+            
+            ui.countCashier.textContent = state.cashiers;
+            ui.countWaiter.textContent = state.waiters;
+            ui.loanDisplay.textContent = formatMoney(state.loan);
+
+            // Блокировка кнопок
+            document.getElementById('buyGrill').disabled = state.money < state.priceGrill || (!state.buildingOwned && state.grills >= state.maxEquipment);
+            document.getElementById('buyCashier').disabled = state.money < state.priceCashier;
+            document.getElementById('buyWaiter').disabled = state.money < state.priceWaiter;
+            document.getElementById('buyAd').disabled = state.money < state.priceAd || state.adActive;
+            document.getElementById('buyBuilding').disabled = state.money < state.priceBuilding || state.buildingOwned;
+            document.getElementById('takeLoan').disabled = state.loan > 0;
+
+            // Таймер рекламы
+            if (state.adActive) {
+                const left = Math.ceil((state.adEndTime - Date.now()) / 1000);
+                if (left > 0) {
+                    ui.adTimer.textContent = `Активна (${left}с)`;
+                    ui.adTimer.style.color = '#f1c40f';
+                } else {
+                    state.adActive = false;
+                    state.adBoost = 0;
+                    ui.adTimer.textContent = 'Закончилась';
+                    ui.adTimer.style.color = 'var(--hint)';
+                    addLog("📢 Реклама закончилась. Поток клиентов спал.");
+                }
             } else {
-                updateMessage(`📉 Меньше! (Попытка ${attempts})`);
-                tg.HapticFeedback.impactOccurred('light');
+                if (!state.adActive) ui.adTimer.textContent = 'Не активна';
+                ui.adTimer.style.color = 'var(--hint)';
             }
+        }
+
+        // Логика Клиентов (Тик)
+        setInterval(() => {
+            // Доход от официантов (пассивный)
+            if (state.waiters > 0) {
+                let waiterIncome = state.waiters * 5;
+                if (state.adActive) waiterIncome *= 2;
+                state.money += waiterIncome;
+            }
+
+            // Обработка кредита (списываем 2% каждые 5 секунд)
+            if (state.loan > 0) {
+                let interest = Math.ceil(state.loan * 0.02);
+                state.money -= interest;
+                if (state.money < 0) state.money = 0;
+            }
+
+            updateUI();
+        }, 5000);
+
+        // Приход клиентов (каждые 3 секунды)
+        setInterval(() => {
+            let chance = 0.3; // Базовый шанс
+            if (state.adActive) chance += 0.5; // Реклама сильно бустит
             
-            inputEl.value = '';
-            inputEl.focus();
-        }
+            if (Math.random() < chance) {
+                let clients = 1 + Math.floor(Math.random() * state.grills);
+                let income = clients * 15;
+                let tip = state.cashiers * 5; // Кассиры ускоряют, официанты дают чаевые
 
-        function resetGame() {
-            secretNumber = Math.floor(Math.random() * 100) + 1;
-            attempts = 0;
-            gameOver = false;
-            inputEl.disabled = false;
-            guessBtn.disabled = false;
-            resetBtn.style.display = 'none';
-            inputEl.value = '';
-            updateMessage('Я загадал число от 1 до 100. Попробуй угадать!');
-            inputEl.focus();
-        }
+                state.money += income + tip;
+                addLog(`🍔 Пришло клиентов: ${clients}. Выручка: +${income + tip} ₽`);
+                
+                // Шанс на бандитов (10%)
+                if (Math.random() < 0.1 && state.money > 1000) {
+                    let racket = Math.floor(state.money * 0.2);
+                    if (state.loan === 0) { // Бандиты не трогают, если уже есть кредит
+                        state.money -= racket;
+                        addLog(`🚨 Бандиты! Отдал ${racket} ₽ за "крышу".`);
+                        tg.HapticFeedback.notificationOccurred('error');
+                    }
+                }
+            }
+            updateUI();
+        }, 3000);
 
-        guessBtn.addEventListener('click', checkGuess);
-        resetBtn.addEventListener('click', resetGame);
-        inputEl.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') checkGuess();
+        // Обработчики кнопок
+        document.getElementById('btnClick').addEventListener('click', () => {
+            state.money += state.incomePerClick;
+            tg.HapticFeedback.impactOccurred('light');
+            updateUI();
         });
+
+        document.getElementById('buyGrill').addEventListener('click', () => {
+            state.money -= state.priceGrill;
+            state.grills++;
+            state.priceGrill = Math.floor(state.priceGrill * 1.5);
+            addLog(`🔥 Куплен новый гриль! Всего: ${state.grills}`);
+            save(); updateUI();
+        });
+
+        document.getElementById('buyCashier').addEventListener('click', () => {
+            state.money -= state.priceCashier;
+            state.cashiers++;
+            state.priceCashier = Math.floor(state.priceCashier * 1.4);
+            addLog(`👨‍💼 Нанят кассир! Теперь их: ${state.cashiers}`);
+            save(); updateUI();
+        });
+
+        document.getElementById('buyWaiter').addEventListener('click', () => {
+            state.money -= state.priceWaiter;
+            state.waiters++;
+            state.priceWaiter = Math.floor(state.priceWaiter * 1.6);
+            addLog(`🏃 Нанят официант! Теперь их: ${state.waiters}`);
+            save(); updateUI();
+        });
+
+        document.getElementById('buyAd').addEventListener('click', () => {
+            state.money -= state.priceAd;
+            state.adActive = true;
+            state.adEndTime = Date.now() + 30000; // 30 секунд
+            state.adBoost = 1;
+            addLog(`📢 Запущена реклама! Ждем клиентов 30 секунд...`);
+            tg.HapticFeedback.notificationOccurred('success');
+            save(); updateUI();
+        });
+
+        document.getElementById('buyBuilding').addEventListener('click', () => {
+            if(confirm("Вы уверены, что хотите выкупить помещение за 50 000 ₽?")) {
+                state.money -= state.priceBuilding;
+                state.buildingOwned = true;
+                addLog(`🏢 ПОЗДРАВЛЯЮ! Вы выкупили помещение. Лимиты сняты!`);
+                tg.HapticFeedback.notificationOccurred('success');
+                save(); updateUI();
+            }
+        });
+
+        document.getElementById('takeLoan').addEventListener('click', () => {
+            state.money += 10000;
+            state.loan = 15000; // Долг больше, чем берем (проценты)
+            addLog(`🏦 Взят кредит 10 000 ₽. Вы должны 15 000 ₽ (гасится автоматически).`);
+            save(); updateUI();
+        });
+
+        function save() {
+            localStorage.setItem('burgerTycoon', JSON.stringify(state));
+        }
+
+        // Сохраняем каждые 5 секунд
+        setInterval(save, 5000);
+
+        // Первичный запуск
+        addLog("Добро пожаловать в Бургер Тайкун!");
+        updateUI();
     </script>
 </body>
 </html>
