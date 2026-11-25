@@ -17,65 +17,30 @@
             --green: #34c759;
             --red: #ff3b30;
             --orange: #ff9500;
+            --purple: #af52de;
         }
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-            box-sizing: border-box;
-        }
+        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--bg); color: var(--text); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
-        /* Верхняя панель */
-        .top-bar {
-            padding: 15px;
-            background: var(--card);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            z-index: 10;
-        }
-        .logo { font-size: 20px; font-weight: 800; color: var(--btn); letter-spacing: 1px; }
+        .top-bar { padding: 15px; background: var(--card); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 10; }
+        .logo { font-size: 20px; font-weight: 800; color: var(--purple); letter-spacing: 1px; }
         .date-box { font-size: 14px; font-weight: 600; color: var(--hint); }
         .balance-box { text-align: right; }
         .balance-label { font-size: 10px; color: var(--hint); text-transform: uppercase; }
         .balance-val { font-size: 20px; font-weight: bold; color: var(--green); }
 
-        /* Контентная часть */
-        .content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-            padding-bottom: 80px;
-        }
+        .content { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 80px; }
         .tab { display: none; }
         .tab.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Карточки */
-        .card {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-            border: 1px solid var(--border);
-        }
-        .card-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; justify-content: space-between; }
+        .card { background: var(--card); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid var(--border); }
+        .card-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
         .card-desc { font-size: 13px; color: var(--hint); line-height: 1.4; margin-bottom: 15px; }
         
-        /* Прогресс-бары (Характеристики) */
         .stat-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
         .stat-label { width: 100px; font-weight: 500; }
         .stat-bar-bg { flex: 1; height: 8px; background: var(--border); border-radius: 4px; margin: 0 10px; overflow: hidden; }
-        .stat-bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+        .stat-bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s, background 0.3s; }
         .stat-val { width: 30px; text-align: right; font-weight: bold; }
         
         .bg-green { background: var(--green); }
@@ -83,226 +48,144 @@
         .bg-red { background: var(--red); }
         .bg-blue { background: var(--btn); }
 
-        /* Кнопки */
-        .btn {
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 12px;
-            background: var(--btn);
-            color: var(--btn-text);
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
-            margin-bottom: 10px;
-        }
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--btn); color: var(--btn-text); font-size: 15px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; margin-bottom: 8px; }
         .btn:active { opacity: 0.8; }
         .btn-outline { background: transparent; color: var(--btn); border: 2px solid var(--btn); }
         .btn-green { background: var(--green); color: white; }
         .btn-red { background: var(--red); color: white; }
+        
+        .btn-row { display: flex; gap: 8px; }
+        .btn-row .btn { margin-bottom: 0; }
 
-        /* Главная кнопка "Открыть день" */
-        .big-action-btn {
-            background: linear-gradient(135deg, #007aff, #00c6ff);
-            color: white;
-            font-size: 18px;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 8px 20px rgba(0, 122, 255, 0.3);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 20px;
-        }
+        .big-action-btn { background: linear-gradient(135deg, #af52de, #007aff); color: white; font-size: 18px; padding: 20px; border-radius: 16px; box-shadow: 0 8px 20px rgba(175, 82, 222, 0.3); text-transform: uppercase; letter-spacing: 1px; margin-top: 20px; }
 
-        /* Нижнее меню */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            background: var(--card);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border-top: 1px solid var(--border);
-            padding-bottom: env(safe-area-inset-bottom);
-            z-index: 10;
-        }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 10px;
-            color: var(--hint);
-            cursor: pointer;
-            transition: color 0.2s;
-            width: 20%;
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: var(--card); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); z-index: 10; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: var(--hint); cursor: pointer; transition: color 0.2s; width: 20%; }
         .nav-icon { font-size: 22px; margin-bottom: 4px; }
-        .nav-item.active { color: var(--btn); font-weight: 600; }
+        .nav-item.active { color: var(--purple); font-weight: 600; }
 
-        /* Модальное окно (События) */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5); display: none;
-            justify-content: center; align-items: center; z-index: 100;
-            padding: 20px;
-        }
-        .modal-content {
-            background: var(--card); border-radius: 20px; padding: 20px;
-            width: 100%; max-width: 350px; text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; backdrop-filter: blur(5px); }
+        .modal-content { background: var(--card); border-radius: 20px; padding: 20px; width: 100%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .modal-title { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
-        .modal-text { font-size: 14px; color: var(--text); margin-bottom: 20px; }
-        
-        .list-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 0; border-bottom: 1px solid var(--border);
-        }
+        .modal-text { font-size: 14px; color: var(--text); margin-bottom: 20px; line-height: 1.5; text-align: left;}
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
         .list-item:last-child { border-bottom: none; }
+        
+        .price-tag { font-size: 14px; font-weight: bold; color: var(--btn); }
     </style>
 </head>
 <body>
-    <!-- Верхняя панель -->
     <div class="top-bar">
         <div class="logo">PIXEL</div>
-        <div class="date-box" id="dateDisplay">День 1 · Пн</div>
+        <div class="date-box" id="dateDisplay">День 1</div>
         <div class="balance-box">
             <div class="balance-label">На счету</div>
             <div class="balance-val" id="balanceDisplay">50 000 ₽</div>
         </div>
     </div>
 
-    <!-- Контент -->
     <div class="content">
-        
-        <!-- Вкладка Клуб -->
+        <!-- ВКЛАДКА КЛУБ -->
         <div id="tab-club" class="tab active">
             <div class="card">
-                <div class="card-title">Статус клуба <span style="color:var(--orange)">⭐⭐⭐☆☆</span></div>
-                <div class="card-desc">Ваш клуб пока не может похвастаться большой славой, но всё впереди!</div>
+                <div class="card-title">Репутация <span id="repDisplay" style="color:var(--orange)">⭐ 10</span></div>
+                <div class="card-desc">Влияет на количество гостей. Растет, если в клубе чисто и есть свободные ПК.</div>
                 
                 <div class="stat-row">
                     <div class="stat-label">Цена (₽/ч)</div>
-                    <div class="stat-bar-bg"><div class="stat-bar-fill bg-blue" style="width: 50%"></div></div>
-                    <div class="stat-val">150</div>
+                    <div class="stat-bar-bg"><div class="stat-bar-fill bg-blue" style="width: 50%" id="barPrice"></div></div>
+                    <div class="stat-val" id="valPrice">150</div>
                 </div>
+                <div class="btn-row" style="margin-top:10px; margin-bottom:10px;">
+                    <button class="btn btn-outline" style="padding:8px; font-size:13px;" onclick="setPrice(100)">100 ₽</button>
+                    <button class="btn btn-outline" style="padding:8px; font-size:13px;" onclick="setPrice(150)">150 ₽</button>
+                    <button class="btn btn-outline" style="padding:8px; font-size:13px;" onclick="setPrice(200)">200 ₽</button>
+                </div>
+
                 <div class="stat-row">
                     <div class="stat-label">Чистота</div>
-                    <div class="stat-bar-bg"><div class="stat-bar-fill bg-green" style="width: 80%"></div></div>
-                    <div class="stat-val">80</div>
+                    <div class="stat-bar-bg"><div class="stat-bar-fill bg-green" style="width: 80%" id="barClean"></div></div>
+                    <div class="stat-val" id="valClean">80</div>
                 </div>
                 <div class="stat-row">
                     <div class="stat-label">Техника</div>
-                    <div class="stat-bar-bg"><div class="stat-bar-fill bg-orange" style="width: 40%"></div></div>
-                    <div class="stat-val">40</div>
+                    <div class="stat-bar-bg"><div class="stat-bar-fill bg-orange" style="width: 40%" id="barTech"></div></div>
+                    <div class="stat-val" id="valTech">40</div>
                 </div>
             </div>
 
             <div class="card">
-                <div class="card-title">Действия</div>
-                <button class="btn btn-outline" onclick="showModal('Уборка', 'Вы вызвали клининг. Чистота повышена!', 'Отлично')">Провести уборку (1 000 ₽)</button>
-                <button class="btn btn-outline" onclick="showModal('Ремонт', 'Техник починил ПК. Техника в норме!', 'Отлично')">Починить ПК (5 000 ₽)</button>
+                <div class="card-title">Обслуживание</div>
+                <button class="btn btn-outline" onclick="cleanUp()">Провести уборку (1 000 ₽)</button>
+                <button class="btn btn-outline" onclick="fixTech()">Починить ПК (5 000 ₽)</button>
             </div>
 
             <button class="btn big-action-btn" onclick="nextDay()">Открыть день</button>
         </div>
 
-        <!-- Вкладка Сеть -->
+        <!-- ВКЛАДКА СЕТЬ (ОБОРУДОВАНИЕ) -->
         <div id="tab-network" class="tab">
             <div class="card">
-                <div class="card-title">Оборудование</div>
+                <div class="card-title">Ваши ПК <span id="pcCount" style="color:var(--btn)">5 шт.</span></div>
+                <div class="card-desc">Чем больше ПК, тем больше гостей вы сможете обслужить за день.</div>
                 <div class="list-item">
-                    <div>
-                        <div style="font-weight: 600;">Игровой ПК</div>
-                        <div style="font-size: 12px; color: var(--hint);">Состояние: 100%</div>
-                    </div>
-                    <div style="font-weight: bold; color: var(--btn);">5 шт.</div>
-                </div>
-                <div class="list-item">
-                    <div>
-                        <div style="font-weight: 600;">VIP-Кабина</div>
-                        <div style="font-size: 12px; color: var(--hint);">Состояние: 100%</div>
-                    </div>
-                    <div style="font-weight: bold; color: var(--btn);">1 шт.</div>
+                    <div><div style="font-weight: 600;">Стандартный ПК</div><div style="font-size: 12px; color: var(--hint);">Приносит базовый доход</div></div>
+                    <button class="btn" style="width: auto; padding: 8px 15px; font-size: 13px; margin: 0;" onclick="buyPC('standard')">+ 25 000 ₽</button>
                 </div>
             </div>
-            <button class="btn" onclick="showModal('Магазин', 'Здесь скоро можно будет купить новые ПК!', 'Ок')">Купить ПК</button>
         </div>
 
-        <!-- Вкладка Люди -->
+        <!-- ВКЛАДКА ЛЮДИ (ПЕРСОНАЛ) -->
         <div id="tab-people" class="tab">
             <div class="card">
                 <div class="card-title">Персонал</div>
-                <div class="list-item">
-                    <div>
-                        <div style="font-weight: 600;">Соня (Админ)</div>
-                        <div style="font-size: 12px; color: var(--hint);">Оклад: 30 000 ₽ / мес</div>
-                    </div>
-                    <button style="background:var(--red); color:white; border:none; padding:8px 12px; border-radius:8px;">Уволить</button>
-                </div>
-                <div class="list-item">
-                    <div>
-                        <div style="font-weight: 600;">Артём (Охранник)</div>
-                        <div style="font-size: 12px; color: var(--hint);">Оклад: 40 000 ₽ / мес</div>
-                    </div>
-                    <button style="background:var(--red); color:white; border:none; padding:8px 12px; border-radius:8px;">Уволить</button>
-                </div>
+                <div id="staffList"></div>
             </div>
-            <button class="btn" onclick="showModal('Найм', 'Скоро здесь можно будет искать новых сотрудников!', 'Ок')">Нанять сотрудника</button>
+            <div class="card">
+                <div class="card-title">Найм</div>
+                <button class="btn btn-outline" onclick="hireStaff('admin')">Нанять Админа (30 000 ₽/мес)</button>
+                <button class="btn btn-outline" onclick="hireStaff('guard')">Нанять Охранника (40 000 ₽/мес)</button>
+            </div>
         </div>
 
-        <!-- Вкладка Деньги -->
+        <!-- ВКЛАДКА ДЕНЬГИ (ФИНАНСЫ) -->
         <div id="tab-money" class="tab">
             <div class="card">
-                <div class="card-title">Кредиты и Финансы</div>
-                <div class="card-desc">Взять кредит под 10% в день. Будьте осторожны, коллекторы не дремлют!</div>
-                <button class="btn btn-green" onclick="takeLoan()">Взять кредит 100 000 ₽</button>
-                <button class="btn btn-red" onclick="showModal('Ошибка', 'У вас нет активных кредитов.', 'Ок')">Погасить кредит</button>
+                <div class="card-title">Банк</div>
+                <div class="card-desc">Кредит выдается под 20% сроком на 10 дней.</div>
+                <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;" id="loanDisplay">Текущий долг: 0 ₽</div>
+                <button class="btn btn-green" onclick="takeLoan()" id="btnTakeLoan">Взять 100 000 ₽</button>
+                <button class="btn btn-red" onclick="payLoan()" id="btnPayLoan" style="display:none;">Погасить долг</button>
             </div>
         </div>
 
-        <!-- Вкладка Ещё -->
+        <!-- ВКЛАДКА ЕЩЁ -->
         <div id="tab-more" class="tab">
             <div class="card">
-                <div class="card-title">Настройки и Инфо</div>
-                <div class="list-item"><div>Версия игры</div><div style="color:var(--hint)">1.0 (Beta)</div></div>
-                <div class="list-item"><div>Сбросить прогресс</div><button style="background:var(--red); color:white; border:none; padding:8px 12px; border-radius:8px;">Сброс</button></div>
+                <div class="card-title">Настройки</div>
+                <div class="list-item"><div>Версия</div><div style="color:var(--hint)">1.0 (Global)</div></div>
+                <button class="btn btn-red" style="margin-top:15px;" onclick="resetGame()">Сбросить весь прогресс</button>
             </div>
         </div>
-
     </div>
 
-    <!-- Нижнее меню -->
+    <!-- НИЖНЕЕ МЕНЮ -->
     <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('club', this)">
-            <div class="nav-icon">🎮</div><div>Клуб</div>
-        </div>
-        <div class="nav-item" onclick="switchTab('network', this)">
-            <div class="nav-icon">💻</div><div>Сеть</div>
-        </div>
-        <div class="nav-item" onclick="switchTab('people', this)">
-            <div class="nav-icon">👥</div><div>Люди</div>
-        </div>
-        <div class="nav-item" onclick="switchTab('money', this)">
-            <div class="nav-icon">💰</div><div>Деньги</div>
-        </div>
-        <div class="nav-item" onclick="switchTab('more', this)">
-            <div class="nav-icon">⚙️</div><div>Ещё</div>
-        </div>
+        <div class="nav-item active" onclick="switchTab('club', this)"><div class="nav-icon">🎮</div><div>Клуб</div></div>
+        <div class="nav-item" onclick="switchTab('network', this)"><div class="nav-icon">💻</div><div>Сеть</div></div>
+        <div class="nav-item" onclick="switchTab('people', this)"><div class="nav-icon">👥</div><div>Люди</div></div>
+        <div class="nav-item" onclick="switchTab('money', this)"><div class="nav-icon">💰</div><div>Деньги</div></div>
+        <div class="nav-item" onclick="switchTab('more', this)"><div class="nav-icon">⚙️</div><div>Ещё</div></div>
     </div>
 
-    <!-- Модальное окно -->
+    <!-- МОДАЛЬНОЕ ОКНО -->
     <div class="modal-overlay" id="modal">
         <div class="modal-content">
             <div class="modal-title" id="modalTitle">Заголовок</div>
             <div class="modal-text" id="modalText">Текст</div>
             <button class="btn" id="modalBtn" onclick="closeModal()">Ок</button>
+            <button class="btn btn-red" id="modalBtn2" onclick="closeModal()" style="display:none;">Отмена</button>
         </div>
     </div>
 
@@ -311,27 +194,80 @@
         tg.ready();
         tg.expand();
 
-        // Базовое состояние
+        // --- ИНИЦИАЛИЗАЦИЯ СОСТОЯНИЯ ---
         let state = {
             day: 1,
             money: 50000,
-            loan: 0
+            loan: 0,
+            reputation: 10,
+            pricePerHour: 150,
+            pcs: 5,
+            stats: { cleanliness: 80, tech: 40 },
+            staff: [
+                { name: "Соня", role: "Админ", salary: 30000 },
+                { name: "Артём", role: "Охранник", salary: 40000 }
+            ]
         };
 
-        // Загрузка
-        if (localStorage.getItem('pixelGame')) {
-            state = JSON.parse(localStorage.getItem('pixelGame'));
+        function loadGame() {
+            if (localStorage.getItem('pixelGame_v3')) {
+                state = JSON.parse(localStorage.getItem('pixelGame_v3'));
+            }
+        }
+
+        function saveGame() {
+            localStorage.setItem('pixelGame_v3', JSON.stringify(state));
         }
 
         function formatMoney(amount) {
             return Math.floor(amount).toLocaleString('ru-RU') + ' ₽';
         }
 
+        // --- ОБНОВЛЕНИЕ ИНТЕРФЕЙСА ---
         function updateUI() {
             document.getElementById('balanceDisplay').textContent = formatMoney(state.money);
-            document.getElementById('dateDisplay').textContent = `День ${state.day} · Пн`;
+            document.getElementById('dateDisplay').textContent = `День ${state.day}`;
+            
+            // Полоски
+            document.getElementById('valPrice').textContent = state.pricePerHour;
+            document.getElementById('barPrice').style.width = (state.pricePerHour / 200 * 100) + '%';
+            
+            document.getElementById('valClean').textContent = state.stats.cleanliness;
+            document.getElementById('barClean').style.width = state.stats.cleanliness + '%';
+            document.getElementById('barClean').className = 'stat-bar-fill ' + (state.stats.cleanliness > 40 ? 'bg-green' : 'bg-red');
+            
+            document.getElementById('valTech').textContent = state.stats.tech;
+            document.getElementById('barTech').style.width = state.stats.tech + '%';
+            document.getElementById('barTech').className = 'stat-bar-fill ' + (state.stats.tech > 30 ? 'bg-green' : 'bg-orange');
+
+            document.getElementById('repDisplay').textContent = `⭐ ${state.reputation} / 100`;
+            document.getElementById('pcCount').textContent = state.pcs + ' шт.';
+
+            // Кредит
+            if (state.loan > 0) {
+                document.getElementById('loanDisplay').textContent = 'Текущий долг: ' + formatMoney(state.loan);
+                document.getElementById('btnTakeLoan').style.display = 'none';
+                document.getElementById('btnPayLoan').style.display = 'block';
+                document.getElementById('btnPayLoan').textContent = `Погасить долг (${formatMoney(state.loan)})`;
+            } else {
+                document.getElementById('loanDisplay').textContent = 'Текущий долг: 0 ₽';
+                document.getElementById('btnTakeLoan').style.display = 'block';
+                document.getElementById('btnPayLoan').style.display = 'none';
+            }
+
+            // Персонал
+            let staffHtml = '';
+            state.staff.forEach((s, index) => {
+                staffHtml += `<div class="list-item">
+                    <div><div style="font-weight: 600;">${s.name} (${s.role})</div>
+                    <div style="font-size: 12px; color: var(--hint);">Оклад: ${formatMoney(s.salary)} / мес</div></div>
+                    <button class="btn btn-red" style="width:auto; padding:6px 10px; font-size:12px; margin:0;" onclick="fireStaff(${index})">Уволить</button>
+                </div>`;
+            });
+            document.getElementById('staffList').innerHTML = staffHtml || '<div class="card-desc">Нет сотрудников. Клуб работает сам.</div>';
         }
 
+        // --- НАВИГАЦИЯ ---
         function switchTab(tabId, el) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -340,46 +276,108 @@
             tg.HapticFeedback.impactOccurred('light');
         }
 
-        function showModal(title, text, btnText) {
+        // --- МОДАЛЬНЫЕ ОКНА ---
+        function showModal(title, text, btn1Text, btn2Text = null, btn1Action = null, btn2Action = null) {
             document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalText').textContent = text;
-            document.getElementById('modalBtn').textContent = btnText;
+            document.getElementById('modalText').innerHTML = text.replace(/\n/g, '<br>');
+            
+            const btn1 = document.getElementById('modalBtn');
+            const btn2 = document.getElementById('modalBtn2');
+            
+            btn1.textContent = btn1Text;
+            btn1.onclick = () => { closeModal(); if(btn1Action) btn1Action(); };
+
+            if (btn2Text) {
+                btn2.style.display = 'block';
+                btn2.textContent = btn2Text;
+                btn2.onclick = () => { closeModal(); if(btn2Action) btn2Action(); };
+            } else {
+                btn2.style.display = 'none';
+            }
+            
             document.getElementById('modal').style.display = 'flex';
         }
 
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
+        function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+        // --- ИГРОВАЯ ЛОГИКА ---
+
+        function setPrice(price) {
+            state.pricePerHour = price;
+            updateUI();
+            saveGame();
         }
 
-        function nextDay() {
-            state.day++;
-            // Имитация дохода за день
-            let income = Math.floor(Math.random() * 10000) + 15000;
-            state.money += income;
-            
-            tg.HapticFeedback.notificationOccurred('success');
-            showModal('День завершен', `Пришло гостей: 15\nВыручка: +${formatMoney(income)}\nЗатраты: -5 000 ₽ (Аренда)`, 'Далее');
+        function cleanUp() {
+            if (state.money < 1000) return showModal('Ошибка', 'Недостаточно денег на уборку!', 'Ок');
+            state.money -= 1000;
+            state.stats.cleanliness = 100;
+            showModal('Уборка', 'Вы вызвали клининг. Чистота повышена до 100!', 'Отлично');
+            saveGame(); updateUI();
+        }
+
+        function fixTech() {
+            if (state.money < 5000) return showModal('Ошибка', 'Недостаточно денег на ремонт!', 'Ок');
             state.money -= 5000;
-            
-            save();
-            updateUI();
+            state.stats.tech = 100;
+            showModal('Ремонт', 'Техник починил ПК. Техника в норме!', 'Отлично');
+            saveGame(); updateUI();
+        }
+
+        function buyPC(type) {
+            if (state.money < 25000) return showModal('Ошибка', 'Недостаточно денег!', 'Ок');
+            state.money -= 25000;
+            state.pcs += 1;
+            showModal('Покупка', 'Вы купили новый ПК! Теперь их ' + state.pcs, 'Отлично');
+            saveGame(); updateUI();
+        }
+
+        function hireStaff(type) {
+            let cost = type === 'admin' ? 30000 : 40000;
+            if (state.money < cost) return showModal('Ошибка', 'Недостаточно денег на первый оклад!', 'Ок');
+            state.money -= cost;
+            state.staff.push({
+                name: type === 'admin' ? "Новый Админ" : "Новый Охранник",
+                role: type === 'admin' ? "Админ" : "Охранник",
+                salary: cost
+            });
+            showModal('Найм', 'Сотрудник успешно нанят!', 'Отлично');
+            saveGame(); updateUI();
+        }
+
+        function fireStaff(index) {
+            state.staff.splice(index, 1);
+            showModal('Увольнение', 'Сотрудник уволен. Зарплата больше не списывается.', 'Ок');
+            saveGame(); updateUI();
         }
 
         function takeLoan() {
+            if (state.loan > 0) return showModal('Ошибка', 'У вас уже есть кредит!', 'Ок');
             state.money += 100000;
-            state.loan += 120000;
-            tg.HapticFeedback.notificationOccurred('warning');
-            showModal('Кредит взят', 'Вы получили 100 000 ₽. Ваш долг теперь 120 000 ₽.', 'Понятно');
-            save();
-            updateUI();
+            state.loan = 120000;
+            showModal('Кредит', 'Вы взяли 100 000 ₽. Ваш долг: 120 000 ₽. Проценты капают каждый день!', 'Понятно');
+            saveGame(); updateUI();
         }
 
-        function save() {
-            localStorage.setItem('pixelGame', JSON.stringify(state));
+        function payLoan() {
+            if (state.money >= state.loan) {
+                state.money -= state.loan;
+                state.loan = 0;
+                showModal('Успех', 'Вы полностью погасили кредит!', 'Ура!');
+                saveGame(); updateUI();
+            } else {
+                showModal('Ошибка', 'У вас недостаточно денег для погашения долга!', 'Ок');
+            }
         }
 
-        // Инициализация
-        updateUI();
-    </script>
-</body>
-    </html>
+        function resetGame() {
+            showModal('Сброс', 'Вы уверены, что хотите удалить весь прогресс?', 'Да, сбросить', 'Отмена', () => {
+                localStorage.removeItem('pixelGame_v3');
+                location.reload();
+            });
+        }
+
+        // --- СЛЕДУЮЩИЙ ДЕНЬ ---
+        function nextDay() {
+            // 1. Считаем клиентов
+            let baseGues
