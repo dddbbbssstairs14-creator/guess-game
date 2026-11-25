@@ -1,343 +1,231 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PIXEL Cyber Cafe</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        :root {
-            --bg: var(--tg-theme-bg-color, #f2f2f7);
-            --text: var(--tg-theme-text-color, #000000);
-            --hint: var(--tg-theme-hint-color, #8e8e93);
-            --btn: var(--tg-theme-button-color, #007aff);
-            --btn-text: var(--tg-theme-button-text-color, #ffffff);
-            --card: var(--tg-theme-secondary-bg-color, #ffffff);
-            --border: #e5e5ea;
-            --green: #34c759;
-            --red: #ff3b30;
-            --orange: #ff9500;
-            --purple: #af52de;
-        }
-        body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--bg); color: var(--text); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        
-        .top-bar { padding: 15px; background: var(--card); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 10; }
-        .logo { font-size: 20px; font-weight: 800; color: var(--purple); letter-spacing: 1px; }
-        .date-box { font-size: 14px; font-weight: 600; color: var(--hint); }
-        .balance-box { text-align: right; }
-        .balance-label { font-size: 10px; color: var(--hint); text-transform: uppercase; }
-        .balance-val { font-size: 20px; font-weight: bold; color: var(--green); }
-
-        .content { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 80px; }
-        .tab { display: none; }
-        .tab.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        .card { background: var(--card); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid var(--border); }
-        .card-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
-        .card-desc { font-size: 13px; color: var(--hint); line-height: 1.4; margin-bottom: 15px; }
-        
-        .stat-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
-        .stat-label { width: 100px; font-weight: 500; }
-        .stat-bar-bg { flex: 1; height: 8px; background: var(--border); border-radius: 4px; margin: 0 10px; overflow: hidden; }
-        .stat-bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s, background 0.3s; }
-        .stat-val { width: 30px; text-align: right; font-weight: bold; }
-        
-        .bg-green { background: var(--green); }
-        .bg-orange { background: var(--orange); }
-        .bg-red { background: var(--red); }
-        .bg-blue { background: var(--btn); }
-
-        .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--btn); color: var(--btn-text); font-size: 15px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; margin-bottom: 8px; }
-        .btn:active { opacity: 0.8; }
-        .btn-outline { background: transparent; color: var(--btn); border: 2px solid var(--btn); }
-        .btn-green { background: var(--green); color: white; }
-        .btn-red { background: var(--red); color: white; }
-        
-        .btn-row { display: flex; gap: 8px; }
-        .btn-row .btn { margin-bottom: 0; }
-
-        .big-action-btn { background: linear-gradient(135deg, #af52de, #007aff); color: white; font-size: 18px; padding: 20px; border-radius: 16px; box-shadow: 0 8px 20px rgba(175, 82, 222, 0.3); text-transform: uppercase; letter-spacing: 1px; margin-top: 20px; }
-
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: var(--card); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border); padding-bottom: env(safe-area-inset-bottom); z-index: 10; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: var(--hint); cursor: pointer; transition: color 0.2s; width: 20%; }
-        .nav-icon { font-size: 22px; margin-bottom: 4px; }
-        .nav-item.active { color: var(--purple); font-weight: 600; }
-
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; backdrop-filter: blur(5px); }
-        .modal-content { background: var(--card); border-radius: 20px; padding: 20px; width: 100%; max-width: 350px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal-title { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
-        .modal-text { font-size: 14px; color: var(--text); margin-bottom: 20px; line-height: 1.5; text-align: left;}
-        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
-        .list-item:last-child { border-bottom: none; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#171522">
+  <title>PIXEL — компьютерный клуб</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: var(--tg-theme-bg-color, #171522);
+      --card: var(--tg-theme-secondary-bg-color, #211e30);
+      --text: var(--tg-theme-text-color, #f8f7ff);
+      --hint: var(--tg-theme-hint-color, #aaa6bb);
+      --accent: var(--tg-theme-button-color, #8b5cf6);
+      --button-text: var(--tg-theme-button-text-color, #fff);
+      --line: rgba(255,255,255,.1);
+      --green: #42d392;
+      --red: #ff6577;
+      --orange: #ffbe5c;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; min-height: 100dvh; background: var(--bg); color: var(--text); }
+    button { font: inherit; }
+    .app { max-width: 560px; min-height: 100vh; min-height: 100dvh; margin: auto; padding-bottom: calc(78px + env(safe-area-inset-bottom)); }
+    header { position: sticky; top: 0; z-index: 3; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px; background: var(--bg); border-bottom: 1px solid var(--line); }
+    .brand { font-size: 19px; font-weight: 900; letter-spacing: 1px; color: #b794ff; }
+    .day { color: var(--hint); font-size: 13px; font-weight: 700; }
+    .balance { text-align: right; font-size: 16px; font-weight: 800; color: var(--green); }
+    .balance small { display: block; color: var(--hint); font-size: 10px; font-weight: 600; text-transform: uppercase; }
+    main { padding: 16px; }
+    .page { display: none; animation: appear .18s ease-out; }
+    .page.active { display: block; }
+    @keyframes appear { from { opacity: .5; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+    .card { padding: 16px; margin-bottom: 14px; border: 1px solid var(--line); border-radius: 18px; background: var(--card); }
+    .card h2 { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 10px; font-size: 16px; }
+    .muted, .description { color: var(--hint); }
+    .description { margin: 0 0 14px; font-size: 13px; line-height: 1.45; }
+    .stat { display: grid; grid-template-columns: 90px 1fr 35px; align-items: center; gap: 9px; margin: 13px 0; font-size: 13px; }
+    .track { height: 8px; overflow: hidden; border-radius: 99px; background: rgba(255,255,255,.12); }
+    .fill { height: 100%; border-radius: inherit; background: var(--green); transition: width .2s ease; }
+    .fill.warn { background: var(--orange); }
+    .fill.bad { background: var(--red); }
+    .stat strong { text-align: right; }
+    .row { display: flex; gap: 8px; }
+    .btn { width: 100%; min-height: 44px; margin-top: 9px; padding: 11px 14px; border: 0; border-radius: 12px; background: var(--accent); color: var(--button-text); font-weight: 750; cursor: pointer; }
+    .btn:active { transform: scale(.99); opacity: .85; }
+    .btn.secondary { border: 1px solid var(--accent); background: transparent; color: var(--text); }
+    .btn.success { background: #248b64; }
+    .btn.danger { background: #b9394e; }
+    .row .btn { margin-top: 5px; }
+    .feature { padding: 16px; border-radius: 16px; background: linear-gradient(135deg, #8b5cf6, #4465e8); color: white; }
+    .feature p { margin: 5px 0 14px; color: rgba(255,255,255,.82); font-size: 13px; }
+    .feature .btn { background: white; color: #39286c; }
+    .list-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .list-item:last-child { border-bottom: 0; }
+    .list-item .btn { width: auto; min-height: 36px; margin: 0; padding: 7px 11px; font-size: 12px; white-space: nowrap; }
+    nav { position: fixed; z-index: 4; right: 0; bottom: 0; left: 0; display: flex; justify-content: center; padding: 8px 4px calc(8px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: var(--card); }
+    .nav-inner { display: flex; width: min(560px, 100%); justify-content: space-around; }
+    .nav-item { display: grid; gap: 3px; justify-items: center; width: 20%; padding: 3px 0; border: 0; background: transparent; color: var(--hint); font-size: 10px; cursor: pointer; }
+    .nav-item .icon { font-size: 21px; }
+    .nav-item.active { color: #b794ff; font-weight: 800; }
+    .overlay { position: fixed; z-index: 10; inset: 0; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,.68); }
+    .overlay.open { display: flex; }
+    .dialog { width: min(380px, 100%); padding: 20px; border: 1px solid var(--line); border-radius: 20px; background: var(--card); }
+    .dialog h2 { margin: 0 0 12px; font-size: 20px; }
+    .dialog p { margin: 0 0 14px; line-height: 1.5; white-space: pre-line; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+  </style>
 </head>
 <body>
-    <div class="top-bar">
-        <div class="logo">PIXEL</div>
-        <div class="date-box" id="dateDisplay">День 1</div>
-        <div class="balance-box">
-            <div class="balance-label">На счету</div>
-            <div class="balance-val" id="balanceDisplay">50 000 ₽</div>
+  <div class="app">
+    <header>
+      <div class="brand">PIXEL</div>
+      <div class="day" id="day">День 1</div>
+      <div class="balance"><small>Баланс</small><span id="money">50 000 ₽</span></div>
+    </header>
+    <main>
+      <section class="page active" id="page-club">
+        <div class="card">
+          <h2>Состояние клуба <span id="rep">⭐ 10</span></h2>
+          <p class="description">Ухаживай за клубом, чтобы привлекать больше гостей и развивать бизнес.</p>
+          <div class="stat"><span>Чистота</span><div class="track"><div class="fill" id="clean-bar"></div></div><strong id="clean">80</strong></div>
+          <div class="stat"><span>Техника</span><div class="track"><div class="fill warn" id="tech-bar"></div></div><strong id="tech">40</strong></div>
+          <div class="stat"><span>Цена/час</span><div class="track"><div class="fill" id="price-bar"></div></div><strong id="price">150</strong></div>
+          <p class="description">Выбери цену за час игры:</p>
+          <div class="row"><button class="btn secondary" data-price="100">100 ₽</button><button class="btn secondary" data-price="150">150 ₽</button><button class="btn secondary" data-price="200">200 ₽</button></div>
         </div>
-    </div>
-
-    <div class="content">
-        <div id="tab-club" class="tab active">
-            <div class="card">
-                <div class="card-title">Репутация <span id="repDisplay" style="color:var(--orange)">⭐ 10</span></div>
-                <div class="card-desc">Влияет на количество гостей.</div>
-                <div class="stat-row">
-                    <div class="stat-label">Цена (₽/ч)</div>
-                    <div class="stat-bar-bg"><div class="stat-bar-fill bg-blue" style="width: 50%" id="barPrice"></div></div>
-                    <div class="stat-val" id="valPrice">150</div>
-                </div>
-                <div class="btn-row" style="margin-top:10px; margin-bottom:10px;">
-                    <button class="btn btn-outline" style="padding:8px; font-size:13px;" onclick="setPrice(100)">100 ₽</button>
-                    <button class="btn btn-outline" style="padding:8px; font-size:13px;" onclick="setPrice(150)">150 ₽</button>
-                    <button class="btn btn-outline" style="padding:8px; font-size:13px;" onclick="setPrice(200)">200 ₽</button>
-                </div>
-                <div class="stat-row">
-                    <div class="stat-label">Чистота</div>
-                    <div class="stat-bar-bg"><div class="stat-bar-fill bg-green" style="width: 80%" id="barClean"></div></div>
-                    <div class="stat-val" id="valClean">80</div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat-label">Техника</div>
-                    <div class="stat-bar-bg"><div class="stat-bar-fill bg-orange" style="width: 40%" id="barTech"></div></div>
-                    <div class="stat-val" id="valTech">40</div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-title">Обслуживание</div>
-                <button class="btn btn-outline" onclick="cleanUp()">Уборка (1 000 ₽)</button>
-                <button class="btn btn-outline" onclick="fixTech()">Ремонт ПК (5 000 ₽)</button>
-            </div>
-            <button class="btn big-action-btn" onclick="nextDay()">Открыть день</button>
+        <div class="card">
+          <h2>Обслуживание</h2>
+          <button class="btn secondary" id="clean-button">🧹 Уборка — 1 000 ₽</button>
+          <button class="btn secondary" id="repair-button">🔧 Ремонт ПК — 5 000 ₽</button>
         </div>
-
-        <div id="tab-network" class="tab">
-            <div class="card">
-                <div class="card-title">Ваши ПК <span id="pcCount" style="color:var(--btn)">5 шт.</span></div>
-                <div class="list-item">
-                    <div><div style="font-weight: 600;">Стандартный ПК</div></div>
-                    <button class="btn" style="width: auto; padding: 8px 15px; font-size: 13px; margin: 0;" onclick="buyPC()">+ 25 000 ₽</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-people" class="tab">
-            <div class="card">
-                <div class="card-title">Персонал</div>
-                <div id="staffList"></div>
-            </div>
-            <div class="card">
-                <div class="card-title">Найм</div>
-                <button class="btn btn-outline" onclick="hireStaff('admin')">Нанять Админа (30к)</button>
-                <button class="btn btn-outline" onclick="hireStaff('guard')">Нанять Охранника (40к)</button>
-            </div>
-        </div>
-
-        <div id="tab-money" class="tab">
-            <div class="card">
-                <div class="card-title">Банк</div>
-                <div class="card-desc">Кредит под 20%.</div>
-                <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;" id="loanDisplay">Долг: 0 ₽</div>
-                <button class="btn btn-green" onclick="takeLoan()" id="btnTakeLoan">Взять 100 000 ₽</button>
-                <button class="btn btn-red" onclick="payLoan()" id="btnPayLoan" style="display:none;">Погасить долг</button>
-            </div>
-        </div>
-
-        <div id="tab-more" class="tab">
-            <div class="card">
-                <div class="card-title">Настройки</div>
-                <button class="btn btn-red" style="margin-top:15px;" onclick="resetGame()">Сбросить прогресс</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('club', this)"><div class="nav-icon">🎮</div><div>Клуб</div></div>
-        <div class="nav-item" onclick="switchTab('network', this)"><div class="nav-icon">💻</div><div>Сеть</div></div>
-        <div class="nav-item" onclick="switchTab('people', this)"><div class="nav-icon">👥</div><div>Люди</div></div>
-        <div class="nav-item" onclick="switchTab('money', this)"><div class="nav-icon">💰</div><div>Деньги</div></div>
-        <div class="nav-item" onclick="switchTab('more', this)"><div class="nav-icon">⚙️</div><div>Ещё</div></div>
-    </div>
-
-    <div class="modal-overlay" id="modal">
-        <div class="modal-content">
-            <div class="modal-title" id="modalTitle">Заголовок</div>
-            <div class="modal-text" id="modalText">Текст</div>
-            <button class="btn" id="modalBtn" onclick="closeModal()">Ок</button>
-            <button class="btn btn-red" id="modalBtn2" onclick="closeModal()" style="display:none;">Отмена</button>
-        </div>
-    </div>
-
-    <script>
-        // Инициализация Telegram
-        const tg = window.Telegram.WebApp;
-        if (tg) { tg.ready(); tg.expand(); }
-
-        let state = {
-            day: 1, money: 50000, loan: 0, reputation: 10, pricePerHour: 150, pcs: 5,
-            stats: { cleanliness: 80, tech: 40 },
-            staff: [{ name: "Соня", role: "Админ", salary: 30000 }, { name: "Артём", role: "Охранник", salary: 40000 }]
-        };
-
-        if (localStorage.getItem('pixelGame_v3')) {
-            state = JSON.parse(localStorage.getItem('pixelGame_v3'));
-        }
-
-        function saveGame() { localStorage.setItem('pixelGame_v3', JSON.stringify(state)); }
-        function formatMoney(amount) { return Math.floor(amount).toLocaleString('ru-RU') + ' ₽'; }
-
-        function updateUI() {
-            document.getElementById('balanceDisplay').textContent = formatMoney(state.money);
-            document.getElementById('dateDisplay').textContent = `День ${state.day}`;
-            document.getElementById('valPrice').textContent = state.pricePerHour;
-            document.getElementById('barPrice').style.width = (state.pricePerHour / 200 * 100) + '%';
-            document.getElementById('valClean').textContent = state.stats.cleanliness;
-            document.getElementById('barClean').style.width = state.stats.cleanliness + '%';
-            document.getElementById('barClean').className = 'stat-bar-fill ' + (state.stats.cleanliness > 40 ? 'bg-green' : 'bg-red');
-            document.getElementById('valTech').textContent = state.stats.tech;
-            document.getElementById('barTech').style.width = state.stats.tech + '%';
-            document.getElementById('barTech').className = 'stat-bar-fill ' + (state.stats.tech > 30 ? 'bg-green' : 'bg-orange');
-            document.getElementById('repDisplay').textContent = `⭐ ${state.reputation} / 100`;
-            document.getElementById('pcCount').textContent = state.pcs + ' шт.';
-
-            if (state.loan > 0) {
-                document.getElementById('loanDisplay').textContent = 'Долг: ' + formatMoney(state.loan);
-                document.getElementById('btnTakeLoan').style.display = 'none';
-                document.getElementById('btnPayLoan').style.display = 'block';
-                document.getElementById('btnPayLoan').textContent = `Погасить (${formatMoney(state.loan)})`;
-            } else {
-                document.getElementById('loanDisplay').textContent = 'Долг: 0 ₽';
-                document.getElementById('btnTakeLoan').style.display = 'block';
-                document.getElementById('btnPayLoan').style.display = 'none';
-            }
-
-            let staffHtml = '';
-            state.staff.forEach((s, index) => {
-                staffHtml += `<div class="list-item">
-                    <div><div style="font-weight: 600;">${s.name} (${s.role})</div>
-                    <div style="font-size: 12px; color: var(--hint);">Оклад: ${formatMoney(s.salary)}/мес</div></div>
-                    <button class="btn btn-red" style="width:auto; padding:6px 10px; font-size:12px; margin:0;" onclick="fireStaff(${index})">Уволить</button>
-                </div>`;
-            });
-            document.getElementById('staffList').innerHTML = staffHtml || '<div class="card-desc">Нет сотрудников.</div>';
-        }
-
-        function switchTab(tabId, el) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById('tab-' + tabId).classList.add('active');
-            el.classList.add('active');
-            if (tg) tg.HapticFeedback.impactOccurred('light');
-        }
-
-        function showModal(title, text, btn1Text, btn2Text = null, btn1Action = null, btn2Action = null) {
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalText').innerHTML = text.replace(/\n/g, '<br>');
-            const btn1 = document.getElementById('modalBtn');
-            const btn2 = document.getElementById('modalBtn2');
-            btn1.textContent = btn1Text;
-            btn1.onclick = () => { closeModal(); if(btn1Action) btn1Action(); };
-            if (btn2Text) {
-                btn2.style.display = 'block';
-                btn2.textContent = btn2Text;
-                btn2.onclick = () => { closeModal(); if(btn2Action) btn2Action(); };
-            } else { btn2.style.display = 'none'; }
-            document.getElementById('modal').style.display = 'flex';
-        }
-
-        function closeModal() { document.getElementById('modal').style.display = 'none'; }
-
-        function setPrice(price) { state.pricePerHour = price; updateUI(); saveGame(); }
-        
-        function cleanUp() {
-            if (state.money < 1000) return showModal('Ошибка', 'Мало денег!', 'Ок');
-            state.money -= 1000; state.stats.cleanliness = 100;
-            showModal('Уборка', 'Чистота 100!', 'Ок'); saveGame(); updateUI();
-        }
-        
-        function fixTech() {
-            if (state.money < 5000) return showModal('Ошибка', 'Мало денег!', 'Ок');
-            state.money -= 5000; state.stats.tech = 100;
-            showModal('Ремонт', 'Техника 100!', 'Ок'); saveGame(); updateUI();
-        }
-        
-        function buyPC() {
-            if (state.money < 25000) return showModal('Ошибка', 'Мало денег!', 'Ок');
-            state.money -= 25000; state.pcs += 1;
-            showModal('Покупка', 'Куплен ПК!', 'Ок'); saveGame(); updateUI();
-        }
-        
-        function hireStaff(type) {
-            let cost = type === 'admin' ? 30000 : 40000;
-            if (state.money < cost) return showModal('Ошибка', 'Мало денег!', 'Ок');
-            state.money -= cost;
-            state.staff.push({ name: type === 'admin' ? "Новый Админ" : "Новый Охранник", role: type === 'admin' ? "Админ" : "Охранник", salary: cost });
-            showModal('Найм', 'Нанят сотрудник!', 'Ок'); saveGame(); updateUI();
-        }
-        
-        function fireStaff(index) {
-            state.staff.splice(index, 1);
-            showModal('Увольнение', 'Уволен.', 'Ок'); saveGame(); updateUI();
-        }
-        
-        function takeLoan() {
-            if (state.loan > 0) return showModal('Ошибка', 'Кредит уже есть!', 'Ок');
-            state.money += 100000; state.loan = 120000;
-            showModal('Кредит', 'Взято 100к. Долг 120к.', 'Ок'); saveGame(); updateUI();
-        }
-        
-        function payLoan() {
-            if (state.money >= state.loan) {
-                state.money -= state.loan; state.loan = 0;
-                showModal('Успех', 'Кредит закрыт!', 'Ок'); saveGame(); updateUI();
-            } else { showModal('Ошибка', 'Мало денег!', 'Ок'); }
-        }
-        
-        function resetGame() {
-            showModal('Сброс', 'Удалить прогресс?', 'Да', 'Нет', () => {
-                localStorage.removeItem('pixelGame_v3'); location.reload();
-            });
-        }
-
-        function nextDay() {
-            let baseGuests = 10 + Math.floor(state.reputation / 2) + Math.floor(state.stats.cleanliness / 10) + state.pcs;
-            if (state.pricePerHour > 150) baseGuests -= 5;
-            if (state.stats.tech < 30) baseGuests -= 10;
-            let guests = Math.max(1, baseGuests);
-            let income = guests * Math.floor(state.pricePerHour * 1.5);
-            
-            let salaries = 0; state.staff.forEach(s => salaries += s.salary / 30);
-            let taxes = Math.floor(income * 0.1); let rent = 3000;
-            let totalExpenses = salaries + taxes + rent;
-
-            state.stats.cleanliness = Math.max(0, state.stats.cleanliness - Math.floor(Math.random() * 10 + 5));
-            state.stats.tech = Math.max(0, state.stats.tech - Math.floor(Math.random() * 5 + 2));
-            
-            if (state.stats.cleanliness < 40 || state.stats.tech < 30) state.reputation = Math.max(0, state.reputation - 2);
-            else state.reputation = Math.min(100, state.reputation + 1);
-
-            if (state.loan > 0) {
-                let interest = Math.floor(state.loan * 0.05);
-                totalExpenses += interest; state.loan += interest;
-            }
-
-            let netProfit = income - totalExpenses;
-            state.money += netProfit; state.day++;
-
-            let reportText = `👥 Гостей: ${guests}\n💰 Выручка: +${formatMoney(income)}\n📉 Расходы: -${formatMoney(totalExpenses)}\n`;
-            reportText += netProfit > 0 ? `✅ Прибыль: +${formatMoney(netProfit)}` : `❌ Убыток: ${formatMoney(netProfit)}`;
-
-            saveGame(); updateUI();
-
-            if (Math.random() < 0.15 && state.day > 3) {
-                let racketSum = Math.floor(state.money * 0.2);
-                if (racketSum > 500) {
-                    showModal('🚨 Бандиты!', `Требуют ${formatMoney(racketSum)}. Откажешь - сломают технику!`, 
-                        `Заплатить`, 'Отказать', 
-                        () => { state.money -= racketSum; saveGame(); updateUI(); setTimeout(() => showModal('Итог дня', reportTe
+        <div class="feature"><strong>Готов открыть клуб?</strong><p>Каждый день приносит доход, но нужно платить аренду и зарплаты.</p><button class="btn" id="next-day">Открыть следующий день</button></div>
+      </section>
+      <section class="page" id="page-network">
+        <div class="card"><h2>Компьютеры <span id="pcs">5 шт.</span></h2><p class="description">Больше компьютеров — больше гостей и выручки.</p><div class="list-item"><span>🖥️ Стандартный ПК</span><button class="btn" id="buy-pc">Купить · 25 000 ₽</button></div></div>
+      </section>
+      <section class="page" id="page-people">
+        <div class="card"><h2>Команда</h2><div id="staff-list"></div></div>
+        <div class="card"><h2>Нанять сотрудника</h2><p class="description">Зарплата списывается ежедневно (1/30 месячного оклада).</p><button class="btn secondary" id="hire-admin">Нанять админа · 30 000 ₽</button><button class="btn secondary" id="hire-guard">Нанять охранника · 40 000 ₽</button></div>
+      </section>
+      <section class="page" id="page-money">
+        <div class="card"><h2>Банк</h2><p class="description">Можно взять один кредит. Проценты начисляются каждый игровой день.</p><div id="loan" class="description">Долг: 0 ₽</div><button class="btn success" id="take-loan">Взять кредит · 100 000 ₽</button><button class="btn danger" id="pay-loan" hidden>Погасить долг</button></div>
+      </section>
+      <section class="page" id="page-more">
+        <div class="card"><h2>Настройки</h2><p class="description">Прогресс сохраняется на этом устройстве.</p><button class="btn danger" id="reset">Сбросить прогресс</button></div>
+      </section>
+    </main>
+  </div>
+  <nav aria-label="Разделы игры"><div class="nav-inner">
+    <button class="nav-item active" data-tab="club"><span class="icon">🎮</span><span>Клуб</span></button>
+    <button class="nav-item" data-tab="network"><span class="icon">💻</span><span>ПК</span></button>
+    <button class="nav-item" data-tab="people"><span class="icon">👥</span><span>Люди</span></button>
+    <button class="nav-item" data-tab="money"><span class="icon">💰</span><span>Банк</span></button>
+    <button class="nav-item" data-tab="more"><span class="icon">⚙️</span><span>Ещё</span></button>
+  </div></nav>
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="dialog-title"><div class="dialog"><h2 id="dialog-title"></h2><p id="dialog-text"></p><div class="row"><button class="btn" id="dialog-ok">Ок</button><button class="btn secondary" id="dialog-cancel" hidden>Отмена</button></div></div></div>
+  <script>
+    (() => {
+      'use strict';
+      const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+      const STORAGE_KEY = 'pixelGame_v3';
+      const initialState = () => ({ day: 1, money: 50000, loan: 0, reputation: 10, pricePerHour: 150, pcs: 5, stats: { cleanliness: 80, tech: 40 }, staff: [{ name: 'Соня', role: 'Админ', salary: 30000 }, { name: 'Артём', role: 'Охранник', salary: 40000 }] });
+      function loadState() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+          if (!saved || typeof saved !== 'object') return initialState();
+          const defaults = initialState();
+          return {
+            ...defaults, ...saved,
+            day: Math.max(1, Number(saved.day) || 1), money: Number.isFinite(Number(saved.money)) ? Number(saved.money) : defaults.money,
+            loan: Math.max(0, Number(saved.loan) || 0), reputation: clamp(saved.reputation, 0, 100, defaults.reputation),
+            pricePerHour: [100, 150, 200].includes(Number(saved.pricePerHour)) ? Number(saved.pricePerHour) : defaults.pricePerHour,
+            pcs: Math.max(1, Math.floor(Number(saved.pcs) || defaults.pcs)),
+            stats: { ...defaults.stats, ...(saved.stats || {}), cleanliness: clamp(saved.stats && saved.stats.cleanliness, 0, 100, defaults.stats.cleanliness), tech: clamp(saved.stats && saved.stats.tech, 0, 100, defaults.stats.tech) },
+            staff: Array.isArray(saved.staff) ? saved.staff.filter(person => person && typeof person === 'object').map(person => ({ name: String(person.name || 'Сотрудник'), role: String(person.role || 'Сотрудник'), salary: Math.max(0, Number(person.salary) || 0) })) : defaults.staff
+          };
+        } catch (error) { console.warn('Не удалось загрузить сохранение:', error); return initialState(); }
+      }
+      function clamp(value, min, max, fallback) { const number = Number(value); return Number.isFinite(number) ? Math.min(max, Math.max(min, number)) : fallback; }
+      let state = loadState();
+      const $ = id => document.getElementById(id);
+      function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (error) { console.warn('Не удалось сохранить игру:', error); } }
+      function money(value) { return `${Math.floor(value).toLocaleString('ru-RU')} ₽`; }
+      function notify(title, text, buttons = []) {
+        $('dialog-title').textContent = title;
+        $('dialog-text').textContent = text;
+        const ok = $('dialog-ok'); const cancel = $('dialog-cancel');
+        ok.textContent = buttons[0] ? buttons[0].label : 'Ок';
+        ok.onclick = () => { closeDialog(); if (buttons[0] && buttons[0].action) buttons[0].action(); };
+        cancel.hidden = !buttons[1];
+        cancel.textContent = buttons[1] ? buttons[1].label : 'Отмена';
+        cancel.onclick = () => { closeDialog(); if (buttons[1] && buttons[1].action) buttons[1].action(); };
+        $('overlay').classList.add('open');
+      }
+      function closeDialog() { $('overlay').classList.remove('open'); }
+      function feedback() { try { tg?.HapticFeedback?.impactOccurred('light'); } catch (_) {} }
+      function render() {
+        $('money').textContent = money(state.money); $('day').textContent = `День ${state.day}`;
+        $('rep').textContent = `⭐ ${state.reputation} / 100`;
+        $('clean').textContent = state.stats.cleanliness; $('clean-bar').style.width = `${state.stats.cleanliness}%`;
+        $('clean-bar').className = `fill${state.stats.cleanliness < 30 ? ' bad' : state.stats.cleanliness < 55 ? ' warn' : ''}`;
+        $('tech').textContent = state.stats.tech; $('tech-bar').style.width = `${state.stats.tech}%`;
+        $('tech-bar').className = `fill${state.stats.tech < 25 ? ' bad' : state.stats.tech < 50 ? ' warn' : ''}`;
+        $('price').textContent = state.pricePerHour; $('price-bar').style.width = `${state.pricePerHour / 2}%`;
+        $('pcs').textContent = `${state.pcs} шт.`;
+        $('loan').textContent = `Долг: ${money(state.loan)}`;
+        $('take-loan').hidden = state.loan > 0; $('pay-loan').hidden = state.loan <= 0;
+        $('pay-loan').textContent = `Погасить долг · ${money(state.loan)}`;
+        const staffList = $('staff-list'); staffList.replaceChildren();
+        if (!state.staff.length) { const empty = document.createElement('p'); empty.className = 'description'; empty.textContent = 'Пока нет сотрудников.'; staffList.append(empty); }
+        state.staff.forEach((person, index) => {
+          const row = document.createElement('div'); row.className = 'list-item';
+          const label = document.createElement('span'); label.textContent = `${person.name} · ${person.role} — ${money(person.salary)}/мес`;
+          const button = document.createElement('button'); button.className = 'btn danger'; button.textContent = 'Уволить'; button.setAttribute('aria-label', `Уволить: ${person.name}`);
+          button.addEventListener('click', () => { state.staff.splice(index, 1); save(); render(); notify('Команда', `${person.name} уволен(а).`); });
+          row.append(label, button); staffList.append(row);
+        });
+      }
+      function spend(amount) { if (state.money < amount) { notify('Недостаточно денег', `Нужно ${money(amount)}.`); return false; } state.money -= amount; return true; }
+      document.querySelectorAll('.nav-item').forEach(button => button.addEventListener('click', () => {
+        const tab = button.dataset.tab;
+        document.querySelectorAll('.page').forEach(page => page.classList.toggle('active', page.id === `page-${tab}`));
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.toggle('active', item === button)); feedback();
+      }));
+      document.querySelectorAll('[data-price]').forEach(button => button.addEventListener('click', () => { state.pricePerHour = Number(button.dataset.price); save(); render(); feedback(); }));
+      $('clean-button').addEventListener('click', () => { if (!spend(1000)) return; state.stats.cleanliness = 100; save(); render(); notify('Уборка', 'В клубе снова чисто!'); });
+      $('repair-button').addEventListener('click', () => { if (!spend(5000)) return; state.stats.tech = 100; save(); render(); notify('Ремонт', 'Компьютеры отремонтированы!'); });
+      $('buy-pc').addEventListener('click', () => { if (!spend(25000)) return; state.pcs++; save(); render(); notify('Покупка', 'Новый компьютер добавлен в клуб.'); });
+      function hire(role) {
+        const admin = role === 'admin'; const salary = admin ? 30000 : 40000;
+        if (!spend(salary)) return;
+        state.staff.push({ name: admin ? 'Новый админ' : 'Новый охранник', role: admin ? 'Админ' : 'Охранник', salary });
+        save(); render(); notify('Найм', 'Новый сотрудник присоединился к команде.');
+      }
+      $('hire-admin').addEventListener('click', () => hire('admin'));
+      $('hire-guard').addEventListener('click', () => hire('guard'));
+      $('take-loan').addEventListener('click', () => { if (state.loan > 0) return; state.money += 100000; state.loan = 120000; save(); render(); notify('Кредит', 'Получено 100 000 ₽. К возврату — 120 000 ₽.'); });
+      $('pay-loan').addEventListener('click', () => { if (state.money < state.loan) return notify('Недостаточно денег', `Для погашения нужно ${money(state.loan)}.`); state.money -= state.loan; state.loan = 0; save(); render(); notify('Банк', 'Кредит полностью погашен!'); });
+      $('reset').addEventListener('click', () => notify('Сбросить прогресс?', 'Текущий прогресс будет удалён с этого устройства.', [{ label: 'Сбросить', action: () => { state = initialState(); save(); render(); notify('Готово', 'Начинаем новую игру!'); } }, { label: 'Отмена' }]));
+      $('next-day').addEventListener('click', () => {
+        let guests = 10 + Math.floor(state.reputation / 2) + Math.floor(state.stats.cleanliness / 10) + state.pcs;
+        if (state.pricePerHour > 150) guests -= 5;
+        if (state.stats.tech < 30) guests -= 10;
+        guests = Math.max(1, guests);
+        const income = guests * Math.floor(state.pricePerHour * 1.5);
+        const salaries = state.staff.reduce((sum, person) => sum + person.salary / 30, 0);
+        const taxes = Math.floor(income * .1); const rent = 3000;
+        let expenses = salaries + taxes + rent;
+        if (state.loan > 0) { const interest = Math.floor(state.loan * .05); expenses += interest; state.loan += interest; }
+        const profit = income - expenses;
+        state.money += profit; state.day++;
+        state.stats.cleanliness = Math.max(0, state.stats.cleanliness - Math.floor(Math.random() * 10 + 5));
+        state.stats.tech = Math.max(0, state.stats.tech - Math.floor(Math.random() * 5 + 2));
+        if (state.stats.cleanliness < 40 || state.stats.tech < 30) state.reputation = Math.max(0, state.reputation - 2);
+        else state.reputation = Math.min(100, state.reputation + 1);
+        save(); render(); feedback();
+        const report = `👥 Гостей: ${guests}\n💰 Выручка: +${money(income)}\n📉 Расходы: −${money(expenses)}\n${profit >= 0 ? '✅ Прибыль' : '❌ Убыток'}: ${profit >= 0 ? '+' : ''}${money(profit)}`;
+        notify('Итог дня', report);
+      });
+      $('overlay').addEventListener('click', event => { if (event.target === $('overlay')) closeDialog(); });
+      document.addEventListener('keydown', event => { if (event.key === 'Escape') closeDialog(); });
+      try { tg?.ready(); tg?.expand(); } catch (error) { console.warn('Telegram Web App API недоступен:', error); }
+      render();
+    })();
+  </script>
+</body>
+</html>
