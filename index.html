@@ -7,225 +7,53 @@
   <title>PIXEL — компьютерный клуб</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    :root {
-      color-scheme: dark;
-      --bg: var(--tg-theme-bg-color, #171522);
-      --card: var(--tg-theme-secondary-bg-color, #211e30);
-      --text: var(--tg-theme-text-color, #f8f7ff);
-      --hint: var(--tg-theme-hint-color, #aaa6bb);
-      --accent: var(--tg-theme-button-color, #8b5cf6);
-      --button-text: var(--tg-theme-button-text-color, #fff);
-      --line: rgba(255,255,255,.1);
-      --green: #42d392;
-      --red: #ff6577;
-      --orange: #ffbe5c;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; min-height: 100dvh; background: var(--bg); color: var(--text); }
-    button { font: inherit; }
-    .app { max-width: 560px; min-height: 100vh; min-height: 100dvh; margin: auto; padding-bottom: calc(78px + env(safe-area-inset-bottom)); }
-    header { position: sticky; top: 0; z-index: 3; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px; background: var(--bg); border-bottom: 1px solid var(--line); }
-    .brand { font-size: 19px; font-weight: 900; letter-spacing: 1px; color: #b794ff; }
-    .day { color: var(--hint); font-size: 13px; font-weight: 700; }
-    .balance { text-align: right; font-size: 16px; font-weight: 800; color: var(--green); }
-    .balance small { display: block; color: var(--hint); font-size: 10px; font-weight: 600; text-transform: uppercase; }
-    main { padding: 16px; }
-    .page { display: none; animation: appear .18s ease-out; }
-    .page.active { display: block; }
-    @keyframes appear { from { opacity: .5; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-    .card { padding: 16px; margin-bottom: 14px; border: 1px solid var(--line); border-radius: 18px; background: var(--card); }
-    .card h2 { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 10px; font-size: 16px; }
-    .muted, .description { color: var(--hint); }
-    .description { margin: 0 0 14px; font-size: 13px; line-height: 1.45; }
-    .stat { display: grid; grid-template-columns: 90px 1fr 35px; align-items: center; gap: 9px; margin: 13px 0; font-size: 13px; }
-    .track { height: 8px; overflow: hidden; border-radius: 99px; background: rgba(255,255,255,.12); }
-    .fill { height: 100%; border-radius: inherit; background: var(--green); transition: width .2s ease; }
-    .fill.warn { background: var(--orange); }
-    .fill.bad { background: var(--red); }
-    .stat strong { text-align: right; }
-    .row { display: flex; gap: 8px; }
-    .btn { width: 100%; min-height: 44px; margin-top: 9px; padding: 11px 14px; border: 0; border-radius: 12px; background: var(--accent); color: var(--button-text); font-weight: 750; cursor: pointer; }
-    .btn:active { transform: scale(.99); opacity: .85; }
-    .btn.secondary { border: 1px solid var(--accent); background: transparent; color: var(--text); }
-    .btn.success { background: #248b64; }
-    .btn.danger { background: #b9394e; }
-    .row .btn { margin-top: 5px; }
-    .feature { padding: 16px; border-radius: 16px; background: linear-gradient(135deg, #8b5cf6, #4465e8); color: white; }
-    .feature p { margin: 5px 0 14px; color: rgba(255,255,255,.82); font-size: 13px; }
-    .feature .btn { background: white; color: #39286c; }
-    .list-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
-    .list-item:last-child { border-bottom: 0; }
-    .list-item .btn { width: auto; min-height: 36px; margin: 0; padding: 7px 11px; font-size: 12px; white-space: nowrap; }
-    nav { position: fixed; z-index: 4; right: 0; bottom: 0; left: 0; display: flex; justify-content: center; padding: 8px 4px calc(8px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: var(--card); }
-    .nav-inner { display: flex; width: min(560px, 100%); justify-content: space-around; }
-    .nav-item { display: grid; gap: 3px; justify-items: center; width: 20%; padding: 3px 0; border: 0; background: transparent; color: var(--hint); font-size: 10px; cursor: pointer; }
-    .nav-item .icon { font-size: 21px; }
-    .nav-item.active { color: #b794ff; font-weight: 800; }
-    .overlay { position: fixed; z-index: 10; inset: 0; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(0,0,0,.68); }
-    .overlay.open { display: flex; }
-    .dialog { width: min(380px, 100%); padding: 20px; border: 1px solid var(--line); border-radius: 20px; background: var(--card); }
-    .dialog h2 { margin: 0 0 12px; font-size: 20px; }
-    .dialog p { margin: 0 0 14px; line-height: 1.5; white-space: pre-line; }
-    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+    :root{color-scheme:dark;--bg:var(--tg-theme-bg-color,#171522);--card:var(--tg-theme-secondary-bg-color,#211e30);--text:var(--tg-theme-text-color,#f8f7ff);--hint:var(--tg-theme-hint-color,#aaa6bb);--accent:var(--tg-theme-button-color,#8b5cf6);--button-text:var(--tg-theme-button-text-color,#fff);--line:rgba(255,255,255,.1);--green:#42d392;--red:#ff6577;--orange:#ffbe5c;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}*{box-sizing:border-box}body{margin:0;min-height:100vh;min-height:100dvh;background:var(--bg);color:var(--text)}button{font:inherit}.app{max-width:560px;min-height:100vh;min-height:100dvh;margin:auto;padding-bottom:calc(78px + env(safe-area-inset-bottom))}header{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;background:var(--bg);border-bottom:1px solid var(--line)}.brand{font-size:19px;font-weight:900;letter-spacing:1px;color:#b794ff}.day{color:var(--hint);font-size:13px;font-weight:700}.balance{text-align:right;font-size:16px;font-weight:800;color:var(--green)}.balance small{display:block;color:var(--hint);font-size:10px;font-weight:600;text-transform:uppercase}main{padding:16px}.page{display:none}.page.active{display:block}.card{padding:16px;margin-bottom:14px;border:1px solid var(--line);border-radius:18px;background:var(--card)}.card h2{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 10px;font-size:16px}.description{margin:0 0 14px;color:var(--hint);font-size:13px;line-height:1.45}.stat{display:grid;grid-template-columns:90px 1fr 35px;align-items:center;gap:9px;margin:13px 0;font-size:13px}.track{height:8px;overflow:hidden;border-radius:99px;background:rgba(255,255,255,.12)}.fill{height:100%;border-radius:inherit;background:var(--green);transition:width .2s}.fill.warn{background:var(--orange)}.fill.bad{background:var(--red)}.stat strong{text-align:right}.row{display:flex;gap:8px}.btn{width:100%;min-height:44px;margin-top:9px;padding:11px 14px;border:0;border-radius:12px;background:var(--accent);color:var(--button-text);font-weight:750;cursor:pointer}.btn:active{opacity:.85}.btn.secondary{border:1px solid var(--accent);background:transparent;color:var(--text)}.btn.success{background:#248b64}.btn.danger{background:#b9394e}.row .btn{margin-top:5px}.feature{padding:16px;border-radius:16px;background:linear-gradient(135deg,#8b5cf6,#4465e8);color:white}.feature p{margin:5px 0 14px;color:rgba(255,255,255,.82);font-size:13px}.feature .btn{background:white;color:#39286c}.list-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.list-item:last-child{border-bottom:0}.list-item .btn{width:auto;min-height:36px;margin:0;padding:7px 11px;font-size:12px;white-space:nowrap}nav{position:fixed;z-index:4;right:0;bottom:0;left:0;display:flex;justify-content:center;padding:8px 4px calc(8px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--card)}.nav-inner{display:flex;width:min(560px,100%);justify-content:space-around}.nav-item{display:grid;gap:3px;justify-items:center;width:20%;padding:3px 0;border:0;background:transparent;color:var(--hint);font-size:10px;cursor:pointer}.nav-item .icon{font-size:21px}.nav-item.active{color:#b794ff;font-weight:800}.overlay{position:fixed;z-index:10;inset:0;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.68)}.overlay.open{display:flex}.dialog{width:min(380px,100%);padding:20px;border:1px solid var(--line);border-radius:20px;background:var(--card)}.dialog h2{margin:0 0 12px;font-size:20px}.dialog p{margin:0 0 14px;line-height:1.5;white-space:pre-line}
   </style>
 </head>
 <body>
-  <div class="app">
-    <header>
-      <div class="brand">PIXEL</div>
-      <div class="day" id="day">День 1</div>
-      <div class="balance"><small>Баланс</small><span id="money">50 000 ₽</span></div>
-    </header>
-    <main>
-      <section class="page active" id="page-club">
-        <div class="card">
-          <h2>Состояние клуба <span id="rep">⭐ 10</span></h2>
-          <p class="description">Ухаживай за клубом, чтобы привлекать больше гостей и развивать бизнес.</p>
-          <div class="stat"><span>Чистота</span><div class="track"><div class="fill" id="clean-bar"></div></div><strong id="clean">80</strong></div>
-          <div class="stat"><span>Техника</span><div class="track"><div class="fill warn" id="tech-bar"></div></div><strong id="tech">40</strong></div>
-          <div class="stat"><span>Цена/час</span><div class="track"><div class="fill" id="price-bar"></div></div><strong id="price">150</strong></div>
-          <p class="description">Выбери цену за час игры:</p>
-          <div class="row"><button class="btn secondary" data-price="100">100 ₽</button><button class="btn secondary" data-price="150">150 ₽</button><button class="btn secondary" data-price="200">200 ₽</button></div>
-        </div>
-        <div class="card">
-          <h2>Обслуживание</h2>
-          <button class="btn secondary" id="clean-button">🧹 Уборка — 1 000 ₽</button>
-          <button class="btn secondary" id="repair-button">🔧 Ремонт ПК — 5 000 ₽</button>
-        </div>
-        <div class="feature"><strong>Готов открыть клуб?</strong><p>Каждый день приносит доход, но нужно платить аренду и зарплаты.</p><button class="btn" id="next-day">Открыть следующий день</button></div>
-      </section>
-      <section class="page" id="page-network">
-        <div class="card"><h2>Компьютеры <span id="pcs">5 шт.</span></h2><p class="description">Больше компьютеров — больше гостей и выручки.</p><div class="list-item"><span>🖥️ Стандартный ПК</span><button class="btn" id="buy-pc">Купить · 25 000 ₽</button></div></div>
-      </section>
-      <section class="page" id="page-people">
-        <div class="card"><h2>Команда</h2><div id="staff-list"></div></div>
-        <div class="card"><h2>Нанять сотрудника</h2><p class="description">Зарплата списывается ежедневно (1/30 месячного оклада).</p><button class="btn secondary" id="hire-admin">Нанять админа · 30 000 ₽</button><button class="btn secondary" id="hire-guard">Нанять охранника · 40 000 ₽</button></div>
-      </section>
-      <section class="page" id="page-money">
-        <div class="card"><h2>Банк</h2><p class="description">Можно взять один кредит. Проценты начисляются каждый игровой день.</p><div id="loan" class="description">Долг: 0 ₽</div><button class="btn success" id="take-loan">Взять кредит · 100 000 ₽</button><button class="btn danger" id="pay-loan" hidden>Погасить долг</button></div>
-      </section>
-      <section class="page" id="page-more">
-        <div class="card"><h2>Настройки</h2><p class="description">Прогресс сохраняется на этом устройстве.</p><button class="btn danger" id="reset">Сбросить прогресс</button></div>
-      </section>
-    </main>
-  </div>
-  <nav aria-label="Разделы игры"><div class="nav-inner">
-    <button class="nav-item active" data-tab="club"><span class="icon">🎮</span><span>Клуб</span></button>
-    <button class="nav-item" data-tab="network"><span class="icon">💻</span><span>ПК</span></button>
-    <button class="nav-item" data-tab="people"><span class="icon">👥</span><span>Люди</span></button>
-    <button class="nav-item" data-tab="money"><span class="icon">💰</span><span>Банк</span></button>
-    <button class="nav-item" data-tab="more"><span class="icon">⚙️</span><span>Ещё</span></button>
-  </div></nav>
-  <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="dialog-title"><div class="dialog"><h2 id="dialog-title"></h2><p id="dialog-text"></p><div class="row"><button class="btn" id="dialog-ok">Ок</button><button class="btn secondary" id="dialog-cancel" hidden>Отмена</button></div></div></div>
-  <script>
-    (() => {
-      'use strict';
-      const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-      const STORAGE_KEY = 'pixelGame_v3';
-      const initialState = () => ({ day: 1, money: 50000, loan: 0, reputation: 10, pricePerHour: 150, pcs: 5, stats: { cleanliness: 80, tech: 40 }, staff: [{ name: 'Соня', role: 'Админ', salary: 30000 }, { name: 'Артём', role: 'Охранник', salary: 40000 }] });
-      function loadState() {
-        try {
-          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-          if (!saved || typeof saved !== 'object') return initialState();
-          const defaults = initialState();
-          return {
-            ...defaults, ...saved,
-            day: Math.max(1, Number(saved.day) || 1), money: Number.isFinite(Number(saved.money)) ? Number(saved.money) : defaults.money,
-            loan: Math.max(0, Number(saved.loan) || 0), reputation: clamp(saved.reputation, 0, 100, defaults.reputation),
-            pricePerHour: [100, 150, 200].includes(Number(saved.pricePerHour)) ? Number(saved.pricePerHour) : defaults.pricePerHour,
-            pcs: Math.max(1, Math.floor(Number(saved.pcs) || defaults.pcs)),
-            stats: { ...defaults.stats, ...(saved.stats || {}), cleanliness: clamp(saved.stats && saved.stats.cleanliness, 0, 100, defaults.stats.cleanliness), tech: clamp(saved.stats && saved.stats.tech, 0, 100, defaults.stats.tech) },
-            staff: Array.isArray(saved.staff) ? saved.staff.filter(person => person && typeof person === 'object').map(person => ({ name: String(person.name || 'Сотрудник'), role: String(person.role || 'Сотрудник'), salary: Math.max(0, Number(person.salary) || 0) })) : defaults.staff
-          };
-        } catch (error) { console.warn('Не удалось загрузить сохранение:', error); return initialState(); }
-      }
-      function clamp(value, min, max, fallback) { const number = Number(value); return Number.isFinite(number) ? Math.min(max, Math.max(min, number)) : fallback; }
-      let state = loadState();
-      const $ = id => document.getElementById(id);
-      function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (error) { console.warn('Не удалось сохранить игру:', error); } }
-      function money(value) { return `${Math.floor(value).toLocaleString('ru-RU')} ₽`; }
-      function notify(title, text, buttons = []) {
-        $('dialog-title').textContent = title;
-        $('dialog-text').textContent = text;
-        const ok = $('dialog-ok'); const cancel = $('dialog-cancel');
-        ok.textContent = buttons[0] ? buttons[0].label : 'Ок';
-        ok.onclick = () => { closeDialog(); if (buttons[0] && buttons[0].action) buttons[0].action(); };
-        cancel.hidden = !buttons[1];
-        cancel.textContent = buttons[1] ? buttons[1].label : 'Отмена';
-        cancel.onclick = () => { closeDialog(); if (buttons[1] && buttons[1].action) buttons[1].action(); };
-        $('overlay').classList.add('open');
-      }
-      function closeDialog() { $('overlay').classList.remove('open'); }
-      function feedback() { try { tg?.HapticFeedback?.impactOccurred('light'); } catch (_) {} }
-      function render() {
-        $('money').textContent = money(state.money); $('day').textContent = `День ${state.day}`;
-        $('rep').textContent = `⭐ ${state.reputation} / 100`;
-        $('clean').textContent = state.stats.cleanliness; $('clean-bar').style.width = `${state.stats.cleanliness}%`;
-        $('clean-bar').className = `fill${state.stats.cleanliness < 30 ? ' bad' : state.stats.cleanliness < 55 ? ' warn' : ''}`;
-        $('tech').textContent = state.stats.tech; $('tech-bar').style.width = `${state.stats.tech}%`;
-        $('tech-bar').className = `fill${state.stats.tech < 25 ? ' bad' : state.stats.tech < 50 ? ' warn' : ''}`;
-        $('price').textContent = state.pricePerHour; $('price-bar').style.width = `${state.pricePerHour / 2}%`;
-        $('pcs').textContent = `${state.pcs} шт.`;
-        $('loan').textContent = `Долг: ${money(state.loan)}`;
-        $('take-loan').hidden = state.loan > 0; $('pay-loan').hidden = state.loan <= 0;
-        $('pay-loan').textContent = `Погасить долг · ${money(state.loan)}`;
-        const staffList = $('staff-list'); staffList.replaceChildren();
-        if (!state.staff.length) { const empty = document.createElement('p'); empty.className = 'description'; empty.textContent = 'Пока нет сотрудников.'; staffList.append(empty); }
-        state.staff.forEach((person, index) => {
-          const row = document.createElement('div'); row.className = 'list-item';
-          const label = document.createElement('span'); label.textContent = `${person.name} · ${person.role} — ${money(person.salary)}/мес`;
-          const button = document.createElement('button'); button.className = 'btn danger'; button.textContent = 'Уволить'; button.setAttribute('aria-label', `Уволить: ${person.name}`);
-          button.addEventListener('click', () => { state.staff.splice(index, 1); save(); render(); notify('Команда', `${person.name} уволен(а).`); });
-          row.append(label, button); staffList.append(row);
-        });
-      }
-      function spend(amount) { if (state.money < amount) { notify('Недостаточно денег', `Нужно ${money(amount)}.`); return false; } state.money -= amount; return true; }
-      document.querySelectorAll('.nav-item').forEach(button => button.addEventListener('click', () => {
-        const tab = button.dataset.tab;
-        document.querySelectorAll('.page').forEach(page => page.classList.toggle('active', page.id === `page-${tab}`));
-        document.querySelectorAll('.nav-item').forEach(item => item.classList.toggle('active', item === button)); feedback();
-      }));
-      document.querySelectorAll('[data-price]').forEach(button => button.addEventListener('click', () => { state.pricePerHour = Number(button.dataset.price); save(); render(); feedback(); }));
-      $('clean-button').addEventListener('click', () => { if (!spend(1000)) return; state.stats.cleanliness = 100; save(); render(); notify('Уборка', 'В клубе снова чисто!'); });
-      $('repair-button').addEventListener('click', () => { if (!spend(5000)) return; state.stats.tech = 100; save(); render(); notify('Ремонт', 'Компьютеры отремонтированы!'); });
-      $('buy-pc').addEventListener('click', () => { if (!spend(25000)) return; state.pcs++; save(); render(); notify('Покупка', 'Новый компьютер добавлен в клуб.'); });
-      function hire(role) {
-        const admin = role === 'admin'; const salary = admin ? 30000 : 40000;
-        if (!spend(salary)) return;
-        state.staff.push({ name: admin ? 'Новый админ' : 'Новый охранник', role: admin ? 'Админ' : 'Охранник', salary });
-        save(); render(); notify('Найм', 'Новый сотрудник присоединился к команде.');
-      }
-      $('hire-admin').addEventListener('click', () => hire('admin'));
-      $('hire-guard').addEventListener('click', () => hire('guard'));
-      $('take-loan').addEventListener('click', () => { if (state.loan > 0) return; state.money += 100000; state.loan = 120000; save(); render(); notify('Кредит', 'Получено 100 000 ₽. К возврату — 120 000 ₽.'); });
-      $('pay-loan').addEventListener('click', () => { if (state.money < state.loan) return notify('Недостаточно денег', `Для погашения нужно ${money(state.loan)}.`); state.money -= state.loan; state.loan = 0; save(); render(); notify('Банк', 'Кредит полностью погашен!'); });
-      $('reset').addEventListener('click', () => notify('Сбросить прогресс?', 'Текущий прогресс будет удалён с этого устройства.', [{ label: 'Сбросить', action: () => { state = initialState(); save(); render(); notify('Готово', 'Начинаем новую игру!'); } }, { label: 'Отмена' }]));
-      $('next-day').addEventListener('click', () => {
-        let guests = 10 + Math.floor(state.reputation / 2) + Math.floor(state.stats.cleanliness / 10) + state.pcs;
-        if (state.pricePerHour > 150) guests -= 5;
-        if (state.stats.tech < 30) guests -= 10;
-        guests = Math.max(1, guests);
-        const income = guests * Math.floor(state.pricePerHour * 1.5);
-        const salaries = state.staff.reduce((sum, person) => sum + person.salary / 30, 0);
-        const taxes = Math.floor(income * .1); const rent = 3000;
-        let expenses = salaries + taxes + rent;
-        if (state.loan > 0) { const interest = Math.floor(state.loan * .05); expenses += interest; state.loan += interest; }
-        const profit = income - expenses;
-        state.money += profit; state.day++;
-        state.stats.cleanliness = Math.max(0, state.stats.cleanliness - Math.floor(Math.random() * 10 + 5));
-        state.stats.tech = Math.max(0, state.stats.tech - Math.floor(Math.random() * 5 + 2));
-        if (state.stats.cleanliness < 40 || state.stats.tech < 30) state.reputation = Math.max(0, state.reputation - 2);
-        else state.reputation = Math.min(100, state.reputation + 1);
-        save(); render(); feedback();
-        const report = `👥 Гостей: ${guests}\n💰 Выручка: +${money(income)}\n📉 Расходы: −${money(expenses)}\n${profit >= 0 ? '✅ Прибыль' : '❌ Убыток'}: ${profit >= 0 ? '+' : ''}${money(profit)}`;
-        notify('Итог дня', report);
-      });
-      $('overlay').addEventListener('click', event => { if (event.target === $('overlay')) closeDialog(); });
-      document.addEventListener('keydown', event => { if (event.key === 'Escape') closeDialog(); });
-      try { tg?.ready(); tg?.expand(); } catch (error) { console.warn('Telegram Web App API недоступен:', error); }
-      render();
-    })();
-  </script>
+<div class="app"><header><div class="brand">PIXEL</div><div class="day" id="day">День 1</div><div class="balance"><small>Баланс</small><span id="money">50 000 ₽</span></div></header>
+<main>
+<section class="page active" id="page-club"><div class="card"><h2>Состояние клуба <span id="rep">⭐ 10</span></h2><p class="description">Ухаживай за клубом, чтобы привлекать больше гостей и развивать бизнес.</p><div class="stat"><span>Чистота</span><div class="track"><div class="fill" id="clean-bar"></div></div><strong id="clean">80</strong></div><div class="stat"><span>Техника</span><div class="track"><div class="fill warn" id="tech-bar"></div></div><strong id="tech">40</strong></div><div class="stat"><span>Цена/час</span><div class="track"><div class="fill" id="price-bar"></div></div><strong id="price">150</strong></div><p class="description">Выбери цену за час игры:</p><div class="row"><button class="btn secondary" data-price="100">100 ₽</button><button class="btn secondary" data-price="150">150 ₽</button><button class="btn secondary" data-price="200">200 ₽</button></div></div><div class="card"><h2>Обслуживание</h2><button class="btn secondary" id="clean-button">🧹 Уборка — 1 000 ₽</button><button class="btn secondary" id="repair-button">🔧 Ремонт ПК — 5 000 ₽</button></div><div class="feature"><strong>Готов открыть клуб?</strong><p>Каждый день приносит доход, но нужно платить аренду и зарплаты.</p><button class="btn" id="next-day">Открыть следующий день</button></div></section>
+<section class="page" id="page-network"><div class="card"><h2>Компьютеры <span id="pcs">5 шт.</span></h2><p class="description">Больше компьютеров — больше гостей и выручки.</p><div class="list-item"><span>🖥️ Стандартный ПК</span><button class="btn" id="buy-pc">Купить · 25 000 ₽</button></div></div></section>
+<section class="page" id="page-people"><div class="card"><h2>Команда</h2><div id="staff-list"></div></div><div class="card"><h2>Нанять сотрудника</h2><p class="description">Зарплата списывается ежедневно (1/30 месячного оклада).</p><button class="btn secondary" id="hire-admin">Нанять админа · 30 000 ₽</button><button class="btn secondary" id="hire-guard">Нанять охранника · 40 000 ₽</button></div></section>
+<section class="page" id="page-money"><div class="card"><h2>Банк</h2><p class="description">Можно взять один кредит. Проценты начисляются каждый игровой день.</p><div id="loan" class="description">Долг: 0 ₽</div><button class="btn success" id="take-loan">Взять кредит · 100 000 ₽</button><button class="btn danger" id="pay-loan" hidden>Погасить долг</button></div></section>
+<section class="page" id="page-more"><div class="card"><h2>Настройки</h2><p class="description">Прогресс сохраняется на этом устройстве.</p><button class="btn danger" id="reset">Сбросить прогресс</button></div></section>
+</main></div>
+<nav aria-label="Разделы игры"><div class="nav-inner"><button class="nav-item active" data-tab="club"><span class="icon">🎮</span><span>Клуб</span></button><button class="nav-item" data-tab="network"><span class="icon">💻</span><span>ПК</span></button><button class="nav-item" data-tab="people"><span class="icon">👥</span><span>Люди</span></button><button class="nav-item" data-tab="money"><span class="icon">💰</span><span>Банк</span></button><button class="nav-item" data-tab="more"><span class="icon">⚙️</span><span>Ещё</span></button></div></nav>
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="dialog-title"><div class="dialog"><h2 id="dialog-title"></h2><p id="dialog-text"></p><div class="row"><button class="btn" id="dialog-ok">Ок</button><button class="btn secondary" id="dialog-cancel" hidden>Отмена</button></div></div></div>
+<script>
+(() => {
+'use strict';
+const tg=window.Telegram?.WebApp||null, KEY='pixelGame_v3';
+const fresh=()=>({day:1,money:50000,loan:0,reputation:10,pricePerHour:150,pcs:5,stats:{cleanliness:80,tech:40},staff:[{name:'Соня',role:'Админ',salary:30000},{name:'Артём',role:'Охранник',salary:40000}]});
+function clamp(v,min,max,def){v=Number(v);return Number.isFinite(v)?Math.min(max,Math.max(min,v)):def}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(!s||typeof s!=='object')return fresh();const d=fresh();return{...d,...s,day:Math.max(1,Number(s.day)||1),money:Number.isFinite(Number(s.money))?Number(s.money):d.money,loan:Math.max(0,Number(s.loan)||0),reputation:clamp(s.reputation,0,100,d.reputation),pricePerHour:[100,150,200].includes(Number(s.pricePerHour))?Number(s.pricePerHour):150,pcs:Math.max(1,Math.floor(Number(s.pcs)||5)),stats:{...d.stats,...(s.stats||{}),cleanliness:clamp(s.stats?.cleanliness,0,100,80),tech:clamp(s.stats?.tech,0,100,40)},staff:Array.isArray(s.staff)?s.staff.filter(p=>p&&typeof p==='object').map(p=>({name:String(p.name||'Сотрудник'),role:String(p.role||'Сотрудник'),salary:Math.max(0,Number(p.salary)||0)})):d.staff}}catch(e){return fresh()}}
+let state=load();const $=id=>document.getElementById(id);const fmt=n=>`${Math.floor(n).toLocaleString('ru-RU')} ₽`;function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){console.warn('Не удалось сохранить игру',e)}}
+function close(){ $('overlay').classList.remove('open') }
+function notify(title,text,buttons=[]){$('dialog-title').textContent=title;$('dialog-text').textContent=text;const ok=$('dialog-ok'),cancel=$('dialog-cancel');ok.textContent=buttons[0]?.label||'Ок';ok.onclick=()=>{close();buttons[0]?.action?.()};cancel.hidden=!buttons[1];cancel.textContent=buttons[1]?.label||'Отмена';cancel.onclick=()=>{close();buttons[1]?.action?.()};$('overlay').classList.add('open')}
+function render(){$('money').textContent=fmt(state.money);$('day').textContent=`День ${state.day}`;$('rep').textContent=`⭐ ${state.reputation} / 100`;for(const [key,id] of [['cleanliness','clean'],['tech','tech']]){$(id).textContent=state.stats[key];const bar=$(`${key==='cleanliness'?'clean':'tech'}-bar`);bar.style.width=`${state.stats[key]}%`;bar.className=`fill${state.stats[key]<25?' bad':state.stats[key]<50?' warn':''}`} $('price').textContent=state.pricePerHour;$('price-bar').style.width=`${state.pricePerHour/2}%`;$('pcs').textContent=`${state.pcs} шт.`;$('loan').textContent=`Долг: ${fmt(state.loan)}`;$('take-loan').hidden=state.loan>0;$('pay-loan').hidden=state.loan<=0;$('pay-loan').textContent=`Погасить долг · ${fmt(state.loan)}`;const list=$('staff-list');list.replaceChildren();if(!state.staff.length){const p=document.createElement('p');p.className='description';p.textContent='Пока нет сотрудников.';list.append(p)}state.staff.forEach((person,i)=>{const row=document.createElement('div');row.className='list-item';const label=document.createElement('span');label.textContent=`${person.name} · ${person.role} — ${fmt(person.salary)}/мес`;const b=document.createElement('button');b.className='btn danger';b.textContent='Уволить';b.addEventListener('click',()=>{state.staff.splice(i,1);save();render();notify('Команда',`${person.name} уволен(а).`)});row.append(label,b);list.append(row)})}
+function feedback(){try{tg?.HapticFeedback?.impactOccurred('light')}catch(e){}}
+function spend(n){if(state.money<n){notify('Недостаточно денег',`Нужно ${fmt(n)}.`);return false}state.money-=n;return true}
+document.querySelectorAll('.nav-item').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===`page-${b.dataset.tab}`));document.querySelectorAll('.nav-item').forEach(x=>x.classList.toggle('active',x===b));feedback()}));
+document.querySelectorAll('[data-price]').forEach(b=>b.addEventListener('click',()=>{state.pricePerHour=Number(b.dataset.price);save();render();feedback()}));
+$('clean-button').addEventListener('click',()=>{if(!spend(1000))return;state.stats.cleanliness=100;save();render();notify('Уборка','В клубе снова чисто!')});$('repair-button').addEventListener('click',()=>{if(!spend(5000))return;state.stats.tech=100;save();render();notify('Ремонт','Компьютеры отремонтированы!')});$('buy-pc').addEventListener('click',()=>{if(!spend(25000))return;state.pcs++;save();render();notify('Покупка','Новый компьютер добавлен в клуб.')});
+function hire(admin){const salary=admin?30000:40000;if(!spend(salary))return;state.staff.push({name:admin?'Новый админ':'Новый охранник',role:admin?'Админ':'Охранник',salary});save();render();notify('Найм','Новый сотрудник присоединился к команде.')} $('hire-admin').addEventListener('click',()=>hire(true));$('hire-guard').addEventListener('click',()=>hire(false));
+$('take-loan').addEventListener('click',()=>{if(state.loan)return;state.money+=100000;state.loan=120000;save();render();notify('Кредит','Получено 100 000 ₽. К возврату — 120 000 ₽.')});$('pay-loan').addEventListener('click',()=>{if(state.money<state.loan)return notify('Недостаточно денег',`Для погашения нужно ${fmt(state.loan)}.`);state.money-=state.loan;state.loan=0;save();render();notify('Банк','Кредит полностью погашен!')});$('reset').addEventListener('click',()=>notify('Сбросить прогресс?','Текущий прогресс будет удалён с этого устройства.',[{label:'Сбросить',action:()=>{state=fresh();save();render();notify('Готово','Начинаем новую игру!')}},{label:'Отмена'}]));
+$('next-day').addEventListener('click',()=>{
+  // Доходность сбалансирована так, чтобы стартовый клуб был прибыльным без обязательных улучшений.
+  let guests=18+Math.floor(state.reputation*.6)+Math.floor(state.stats.cleanliness/8)+state.pcs*2;
+  if(state.pricePerHour===100)guests+=6;else if(state.pricePerHour===200)guests-=8;
+  if(state.stats.tech<30)guests-=10;guests=Math.max(1,guests);
+  const income=guests*state.pricePerHour*2;
+  const salaries=state.staff.reduce((sum,p)=>sum+p.salary/30,0),taxes=Math.floor(income*.1),rent=2500;
+  let expenses=salaries+taxes+rent;if(state.loan>0){const interest=Math.floor(state.loan*.05);expenses+=interest;state.loan+=interest}
+  const profit=income-expenses;state.money+=profit;state.day++;
+  state.stats.cleanliness=Math.max(0,state.stats.cleanliness-Math.floor(Math.random()*10+5));state.stats.tech=Math.max(0,state.stats.tech-Math.floor(Math.random()*5+2));
+  if(state.stats.cleanliness<40||state.stats.tech<30)state.reputation=Math.max(0,state.reputation-2);else state.reputation=Math.min(100,state.reputation+1);
+  save();render();feedback();notify('Итог дня',`👥 Гостей: ${guests}\n💰 Выручка: +${fmt(income)}\n📉 Расходы: −${fmt(expenses)}\n${profit>=0?'✅ Прибыль':'❌ Убыток'}: ${profit>=0?'+':''}${fmt(profit)}`)
+});
+$('overlay').addEventListener('click',e=>{if(e.target===$('overlay'))close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});try{tg?.ready();tg?.expand()}catch(e){}render();
+})();
+</script>
 </body>
 </html>
