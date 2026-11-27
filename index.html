@@ -3,34 +3,699 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Игра работает</title>
+  <meta name="theme-color" content="#11131b">
+  <title>Дело №17: Ночной музей</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <style>
+    :root {
+      color-scheme: dark;
+      --bg: #11131b;
+      --panel: #1b1e29;
+      --raised: #252a38;
+      --line: #383e4f;
+      --text: #f3f0e8;
+      --muted: #a7adbd;
+      --gold: #efc477;
+      --cyan: #a2dde0;
+      --green: #9bd6a3;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
       min-height: 100vh;
-      display: grid;
-      place-items: center;
-      background: #11131b;
-      color: #efc477;
-      font-family: system-ui, sans-serif;
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(ellipse at 50% -10%, #343044 0, transparent 48%),
+        var(--bg);
     }
 
-    button {
-      border: 0;
-      border-radius: 14px;
-      padding: 16px 22px;
-      background: #efc477;
-      color: #171820;
+    button, input { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+
+    .app {
+      width: min(100%, 720px);
+      margin: auto;
+      padding: max(14px, env(safe-area-inset-top)) 12px
+        max(20px, env(safe-area-inset-bottom));
+    }
+
+    header, .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      font-size: 10px;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      font-weight: 850;
+    }
+
+    h1 { margin: 3px 0 0; font-size: 21px; }
+
+    .reset, .tab, .secondary {
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: #191c26;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    .reset { padding: 9px 10px; font-size: 12px; }
+
+    .mission {
+      margin: 12px 0;
+      padding: 11px 13px;
+      border: 1px solid #efc47744;
+      border-radius: 13px;
+      background: #efc4770d;
+      color: #e8dfcd;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .mission b { color: var(--gold); }
+
+    .game-window {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: #1b1e29;
+      box-shadow: 0 16px 40px #0004;
+    }
+
+    .scene-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .scene-info strong { color: var(--gold); }
+
+    canvas {
+      display: block;
+      width: 100%;
+      aspect-ratio: 900 / 520;
+      background: #252735;
+      touch-action: none;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-top: 1px solid var(--line);
+    }
+
+    .dpad {
+      display: grid;
+      grid-template-columns: repeat(3, 43px);
+      grid-template-rows: repeat(2, 39px);
+      gap: 4px;
+      justify-content: center;
+    }
+
+    .move {
+      border: 1px solid #444a5d;
+      border-radius: 11px;
+      color: var(--text);
+      background: #272b38;
       font-size: 18px;
+      font-weight: 800;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .move:active { background: #454052; color: var(--gold); }
+
+    .move.up { grid-column: 2; grid-row: 1; }
+    .move.left { grid-column: 1; grid-row: 2; }
+    .move.down { grid-column: 2; grid-row: 2; }
+    .move.right { grid-column: 3; grid-row: 2; }
+
+    .interact {
+      min-width: 128px;
+      min-height: 56px;
+      border: 0;
+      border-radius: 13px;
+      color: #171820;
+      background: var(--gold);
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .interact:disabled {
+      color: #a1a1a1;
+      background: #343743;
+      cursor: default;
+    }
+
+    .help {
+      padding: 0 12px 11px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      margin: 12px 0 9px;
+    }
+
+    .tab { padding: 10px 4px; font-size: 12px; }
+
+    .tab.active {
+      color: var(--gold);
+      border-color: #efc47777;
+      background: #302b38;
+    }
+
+    .panel {
+      min-height: 170px;
+      padding: 13px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+    }
+
+    .panel-title {
+      margin: 1px 0 9px;
+      color: var(--gold);
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .muted { color: var(--muted); font-size: 12px; line-height: 1.5; }
+
+    .list { display: grid; gap: 7px; }
+
+    .item {
+      width: 100%;
+      padding: 11px;
+      text-align: left;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--raised);
+      cursor: pointer;
+    }
+
+    .item.selected {
+      border-color: var(--gold);
+      background: #efc47712;
+    }
+
+    .item strong { display: block; font-size: 12px; }
+
+    .item small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    .primary {
+      width: 100%;
+      margin-top: 10px;
+      padding: 12px;
+      border: 0;
+      border-radius: 12px;
+      color: #171820;
+      background: var(--gold);
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .primary:disabled { opacity: .42; cursor: default; }
+
+    .note, .dialogue {
+      margin-top: 9px;
+      padding: 11px;
+      border: 1px solid #a2dde044;
+      border-radius: 12px;
+      background: #a2dde00d;
+      color: #d7eff0;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .success {
+      border-color: #9bd6a344;
+      background: #9bd6a30d;
+      color: #d9efdc;
+    }
+
+    .modal-bg {
+      display: none;
+      position: fixed;
+      z-index: 5;
+      inset: 0;
+      padding: 18px;
+      align-items: center;
+      justify-content: center;
+      background: #000c;
+    }
+
+    .modal-bg.show { display: flex; }
+
+    .modal {
+      width: min(100%, 370px);
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #20232f;
+    }
+
+    .modal h2 { margin: 0 0 5px; font-size: 19px; }
+    .modal p { color: var(--muted); font-size: 12px; line-height: 1.45; }
+
+    .code {
+      width: 100%;
+      margin: 5px 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--gold);
+      background: #11131b;
+      font-size: 24px;
+      letter-spacing: .4em;
+      text-align: center;
+    }
+
+    .modal-row { display: flex; gap: 8px; }
+    .modal-row button { flex: 1; }
+
+    .toast {
+      position: fixed;
+      z-index: 9;
+      left: 50%;
+      bottom: max(22px, env(safe-area-inset-bottom));
+      transform: translate(-50%, 12px);
+      opacity: 0;
+      pointer-events: none;
+      padding: 10px 14px;
+      border-radius: 12px;
+      color: #171820;
+      background: var(--gold);
+      font-size: 12px;
+      font-weight: 850;
+      text-align: center;
+      transition: .2s ease;
+      width: max-content;
+      max-width: calc(100% - 28px);
+    }
+
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (max-width: 380px) {
+      .move { width: 39px; }
+      .dpad { grid-template-columns: repeat(3, 39px); }
+      .interact { min-width: 112px; }
     }
   </style>
 </head>
+
 <body>
-  <button id="play">Запустить игру</button>
+  <main class="app">
+    <header>
+      <div>
+        <div class="eyebrow">Интерактивное дело №17</div>
+        <h1>Ночной музей</h1>
+      </div>
+      <button class="reset" data-action="reset">Новая игра</button>
+    </header>
+
+    <div class="mission">
+      <b>Твоя цель:</b> найти пропавший алмаз, исследовать музей и выяснить,
+      кто отключил охрану. Собирай улики и проверяй версии.
+    </div>
+
+    <section class="game-window">
+      <div class="scene-info">
+        <strong id="room-name">Главный зал</strong>
+        <span id="game-stats">Улики: 0/9</span>
+      </div>
+
+      <canvas id="game" width="900" height="520"></canvas>
+
+      <div class="controls">
+        <div class="dpad" aria-label="Управление персонажем">
+          <button class="move up" data-dir="up" aria-label="Вверх">▲</button>
+          <button class="move left" data-dir="left" aria-label="Влево">◀</button>
+          <button class="move down" data-dir="down" aria-label="Вниз">▼</button>
+          <button class="move right" data-dir="right" aria-label="Вправо">▶</button>
+        </div>
+
+        <button class="interact" id="interact" disabled>Идти к объекту</button>
+      </div>
+
+      <div class="help">
+        Нажимай стрелки или WASD, чтобы ходить. Можно нажать на сцену, чтобы идти к месту.
+        Подойди к светящейся точке и нажми «Осмотреть».
+      </div>
+    </section>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="case">🗂 Дело</button>
+      <button class="tab" data-tab="board">🧩 Улики</button>
+      <button class="tab" data-tab="interview">🗣 Допрос</button>
+    </nav>
+
+    <section class="panel" id="panel"></section>
+  </main>
+
+  <div class="modal-bg" id="modal">
+    <div class="modal">
+      <h2>Пульт охраны</h2>
+      <p>Введи четырёхзначный код. Подсказка спрятана в кабинете директора.</p>
+      <input class="code" id="code-input" inputmode="numeric" maxlength="4" placeholder="••••">
+      <div class="modal-row">
+        <button class="secondary" data-action="close-modal">Закрыть</button>
+        <button class="primary" style="margin:0" data-action="submit-code">Проверить</button>
+      </div>
+      <div id="code-feedback"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
   <script>
-    document.getElementById("play").addEventListener("click", () => {
-      alert("GitHub Pages работает!");
-    });
-  </script>
-</body>
-</html>
+    (() => {
+      "use strict";
+
+      const SAVE_KEY = "night-museum-detective-v3";
+      const canvas = document.getElementById("game");
+      const ctx = canvas.getContext("2d");
+      const panel = document.getElementById("panel");
+
+      const clueData = {
+        shards: {
+          title: "Осколки витрины",
+          text: "Большая часть стекла лежит внутри. Витрину разбили снаружи, чтобы подделать взлом."
+        },
+        plinth: {
+          title: "Пустая подставка",
+          text: "Алмаз сняли аккуратно. Виновный знал, как открыть витрину."
+        },
+        codeNote: {
+          title: "Записка под столом",
+          text: "На записке: «Перезапуск системы — 04:17»."
+        },
+        schedule: {
+          title: "График дежурств",
+          text: "В ночь кражи в музее оставались директор Вера и охранник Лев."
+        },
+        accessLog: {
+          title: "Журнал пульта",
+          text: "Охрану выключили вручную в 21:14 — ещё до закрытия музея."
+        },
+        camera: {
+          title: "Кадр с камеры",
+          text: "Человек в форме охраны выходит из зала с длинным футляром."
+        },
+        keyLog: {
+          title: "Журнал ключей",
+          text: "Запасной ключ от витрины получил Лев. Возврат ключа не записан."
+        },
+        footprint: {
+          title: "След у выхода",
+          text: "Свежий след форменного ботинка ведёт к служебному выходу."
+        },
+        ledger: {
+          title: "Книга инвентаризации",
+          text: "В 20:40 реставратор Мира записала, что витрина была цела."
+        }
+      };
+
+      const rooms = {
+        gallery: {
+          name: "Главный зал",
+          color: "#292a3a",
+          objects: [
+            { id: "shards", label: "Осколки стекла", x: 235, y: 355, type: "clue", clue: "shards", icon: "✦" },
+            { id: "plinth", label: "Пустая витрина", x: 610, y: 310, type: "clue", clue: "plinth", icon: "◇" },
+            { id: "officeDoor", label: "Кабинет директора", x: 820, y: 245, type: "door", to: "office", icon: "▣" },
+            { id: "securityDoor", label: "Пост охраны", x: 450, y: 60, type: "door", to: "security", icon: "▣" }
+          ]
+        },
+        office: {
+          name: "Кабинет директора",
+          color: "#45352f",
+          objects: [
+            { id: "note", label: "Записка под столом", x: 250, y: 340, type: "clue", clue: "codeNote", icon: "▤" },
+            { id: "schedule", label: "График дежурств", x: 620, y: 205, type: "clue", clue: "schedule", icon: "▦" },
+            { id: "galleryDoor", label: "Главный зал", x: 75, y: 250, type: "door", to: "gallery", icon: "▣" },
+            { id: "archiveDoor", label: "Архив музея", x: 820, y: 250, type: "door", to: "archive", icon: "▣" }
+          ]
+        },
+        security: {
+          name: "Пост охраны",
+          color: "#29444a",
+          objects: [
+            { id: "terminal", label: "Пульт охраны", x: 450, y: 250, type: "terminal", icon: "⌨" },
+            { id: "monitor", label: "Монитор камер", x: 690, y: 205, type: "camera", icon: "▣" },
+            { id: "galleryDoor", label: "Главный зал", x: 75, y: 250, type: "door", to: "gallery", icon: "▣" },
+            { id: "corridorDoor", label: "Служебный коридор", x: 450, y: 465, type: "door", to: "corridor", icon: "▣" }
+          ]
+        },
+        corridor: {
+          name: "Служебный коридор",
+          color: "#403c34",
+          objects: [
+            { id: "keyLog", label: "Журнал ключей", x: 250, y: 230, type: "clue", clue: "keyLog", icon: "⚿" },
+            { id: "footprint", label: "След ботинка", x: 645, y: 365, type: "clue", clue: "footprint", icon: "◉" },
+            { id: "securityDoor", label: "Пост охраны", x: 75, y: 250, type: "door", to: "security", icon: "▣" },
+            { id: "archiveDoor", label: "Архив музея", x: 820, y: 250, type: "door", to: "archive", icon: "▣" }
+          ]
+        },
+        archive: {
+          name: "Архив музея",
+          color: "#3d3444",
+          objects: [
+            { id: "ledger", label: "Книга инвентаризации", x: 450, y: 275, type: "clue", clue: "ledger", icon: "▤" },
+            { id: "officeDoor", label: "Кабинет директора", x: 75, y: 250, type: "door", to: "office", icon: "▣" },
+            { id: "corridorDoor", label: "Служебный коридор", x: 820, y: 250, type: "door", to: "corridor", icon: "▣" }
+          ]
+        }
+      };
+
+      const suspects = [
+        { id: "lev", name: "Лев", job: "Ночной охранник" },
+        { id: "vera", name: "Вера", job: "Директор музея" },
+        { id: "mira", name: "Мира", job: "Реставратор" }
+      ];
+
+      function freshState() {
+        return {
+          room: "gallery",
+          tab: "case",
+          found: [],
+          codeOpen: false,
+          selectedClues: [],
+          deductions: [],
+          selectedSuspect: "",
+          dialogue: "",
+          result: ""
+        };
+      }
+
+      let state;
+
+      try {
+        state = { ...freshState(), ...JSON.parse(localStorage.getItem(SAVE_KEY) || "{}") };
+        if (!rooms[state.room]) state.room = "gallery";
+      } catch {
+        state = freshState();
+      }
+
+      const player = { x: 450, y: 420 };
+      const keys = new Set();
+      let moveTarget = null;
+      let activeObject = null;
+      let lastHudUpdate = 0;
+      let toastTimer = 0;
+
+      function save() {
+        try {
+          localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+        } catch {
+          // Игра продолжит работать, даже если браузер запретил локальное сохранение.
+        }
+      }
+
+      function hasClue(id) {
+        return state.found.includes(id);
+      }
+
+      function showToast(message) {
+        const element = document.getElementById("toast");
+        element.textContent = message;
+        element.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => element.classList.remove("show"), 2300);
+      }
+
+      function distance(a, b) {
+        return Math.hypot(a.x - b.x, a.y - b.y);
+      }
+
+      function closestObject() {
+        const objects = rooms[state.room].objects;
+        let closest = null;
+        let bestDistance = Infinity;
+
+        for (const object of objects) {
+          const d = distance(player, object);
+          if (d < bestDistance) {
+            bestDistance = d;
+            closest = object;
+          }
+        }
+
+        return bestDistance <= 90 ? closest : null;
+      }
+
+      function updateHud() {
+        activeObject = closestObject();
+
+        document.getElementById("room-name").textContent = rooms[state.room].name;
+        document.getElementById("game-stats").textContent =
+          `Улики: ${state.found.length}/${Object.keys(clueData).length}`;
+
+        const button = document.getElementById("interact");
+
+        if (activeObject) {
+          button.disabled = false;
+          button.textContent = activeObject.type === "door"
+            ? `Войти: ${activeObject.label}`
+            : `Осмотреть: ${activeObject.label}`;
+        } else {
+          button.disabled = true;
+          button.textContent = "Иди к объекту";
+        }
+      }
+
+      function drawRoom() {
+        const room = rooms[state.room];
+
+        const gradient = ctx.createLinearGradient(0, 0, 0, 520);
+        gradient.addColorStop(0, room.color);
+        gradient.addColorStop(1, "#171923");
+
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 900, 520);
+
+        // Стена и пол
+        ctx.fillStyle = "#ffffff08";
+        ctx.fillRect(0, 0, 900, 330);
+
+        ctx.fillStyle = "#151720";
+        ctx.beginPath();
+        ctx.moveTo(0, 330);
+        ctx.lineTo(900, 330);
+        ctx.lineTo(900, 520);
+        ctx.lineTo(0, 520);
+        ctx.closePath();
+        ctx.fill();
+
+        // Перспективные линии пола
+        ctx.strokeStyle = "#ffffff12";
+        ctx.lineWidth = 2;
+        for (let x = -200; x <= 1100; x += 125) {
+          ctx.beginPath();
+          ctx.moveTo(450, 330);
+          ctx.lineTo(x, 520);
+          ctx.stroke();
+        }
+        for (let y = 365; y < 520; y += 38) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(900, y);
+          ctx.stroke();
+        }
+
+        // Верхние лампы
+        for (let x = 130; x < 900; x += 220) {
+          ctx.fillStyle = "#f4d18c22";
+          ctx.fillRect(x - 45, 28, 90, 8);
+          ctx.fillStyle = "#f4d18c88";
+          ctx.fillRect(x - 24, 31, 48, 3);
+        }
+
+        drawRoomDecor();
+
+        for (const object of room.objects) {
+          drawObject(object);
+        }
+
+        drawPlayer();
+      }
+
+      function drawRoomDecor() {
+        if (state.room === "gallery") {
+          // Картины
+          [105, 355, 715].forEach((x, i) => {
+            ctx.fillStyle = "#14151e";
+            ctx.fillRect(x, 115, 115, 112);
+            ctx.strokeStyle = i === 1 ? "#d1ad6a" : "#726a5c";
+            ctx.lineWidth = 6;
+            ctx.strokeRect(x, 115, 115, 112);
+            ctx.fillStyle = ["#4c454f", "#3a5b63", "#6a493c"][i];
+            ctx.fillRect(x + 13, 128, 89, 84);
+            ctx.fillStyle = "#d8c49b66";
+            ctx.beginPath();
+            ctx.arc(x + 58, 160, 19, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        }
+
+        if (state.room === "office") {
+          ctx.fillStyle = "#171921";
+          ctx.fillRect(140, 280, 250, 85);
+          ctx.fillStyle = "#6b4c37";
+          ctx.fillRect(150, 270, 230, 15);
+          ctx.fillRect(170, 365, 15, 65);
+          ctx.fillRect(340, 365, 15, 65);
+          ctx.fillStyle = "#d9c89b";
+          ctx.fillRect(188, 240, 100, 8);
+          ctx.fillRect(510, 100, 250, 125);
+          ctx.strokeStyle = "#e7c77f";
+          ctx.lineWidth = 4;
+          ctx.strokeRect(510, 100, 250, 125);
+        }
+
+        if (state.room === "security") {
+          ctx.fillStyle = "#11141b";
+          ctx.fillRect(170, 125, 560, 145);
+          for (let i = 0; i < 4; i++) {
+            ctx.fillStyle = ["#31565a", "#3c3b52", "#394a42", "#4b3b38"][i];
+            ctx.fillRect(185 + i * 135, 140, 120, 110);
+            ctx.strokeStyle = "#9ad8dc55";
+            ctx.strokeRect(185 + i * 135, 140, 120, 110);
+          }
+          ctx.fillStyle = "#555b68";
+          ctx.fillRect(330, 300, 240, 68);
+          ctx.fillStyle = "#8eb7b5";
+          ctx.fillRect(350, 312, 200, 8);
+        }
+
+        if (state.room === "corridor") {
+          for (let x = 80; x < 900; x += 190) {
+            ctx.f
