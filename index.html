@@ -1,61 +1,578 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#101018">
-<title>PIXEL — Neon Club Tycoon</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<style>
-:root{color-scheme:dark;--bg:var(--tg-theme-bg-color,#101018);--panel:var(--tg-theme-secondary-bg-color,#191923);--panel2:#20202c;--text:var(--tg-theme-text-color,#f6f5ff);--muted:var(--tg-theme-hint-color,#9898aa);--accent:#a879ff;--cyan:#5be7ff;--green:#57e39a;--red:#ff667a;--gold:#ffcb6b;--stroke:rgba(255,255,255,.09);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}*{box-sizing:border-box}body{margin:0;min-height:100vh;min-height:100dvh;background:radial-gradient(ellipse at 80% -15%,rgba(131,83,255,.19),transparent 40%),var(--bg);color:var(--text)}button{font:inherit;color:inherit}.shell{max-width:620px;margin:auto;min-height:100vh;min-height:100dvh;padding-bottom:calc(82px + env(safe-area-inset-bottom))}header{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 17px;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--stroke)}.brand{font-weight:1000;font-size:19px;letter-spacing:2px;color:var(--cyan);text-shadow:0 0 18px #36cfff66}.brand span{color:var(--accent)}.day-chip{padding:7px 10px;border:1px solid var(--stroke);border-radius:20px;color:var(--muted);font-size:12px;font-weight:750}.wallet{text-align:right;font-size:16px;font-weight:900;color:var(--green)}.wallet small{display:block;color:var(--muted);font-size:9px;letter-spacing:1px;text-transform:uppercase}.main{padding:16px}.page{display:none;animation:fade .2s ease}.page.active{display:block}@keyframes fade{from{opacity:.55;transform:translateY(4px)}to{opacity:1;transform:none}}.hero{position:relative;overflow:hidden;padding:20px;border:1px solid #a879ff44;border-radius:22px;background:linear-gradient(135deg,#251b3e 0%,#181d35 55%,#102d3a 100%);box-shadow:0 14px 40px #0003}.hero:after{content:'🎮';position:absolute;right:13px;top:8px;font-size:72px;opacity:.14;transform:rotate(-12deg)}.eyebrow{color:var(--cyan);font-size:10px;font-weight:900;letter-spacing:1.6px;text-transform:uppercase}.hero h1{position:relative;z-index:1;margin:8px 0 5px;font-size:25px;line-height:1.1}.hero p{position:relative;z-index:1;max-width:75%;margin:0;color:#c3bfd5;font-size:13px;line-height:1.45}.level-line{position:relative;z-index:1;display:flex;justify-content:space-between;margin-top:16px;color:#ddd9ee;font-size:11px;font-weight:750}.progress{height:7px;margin-top:6px;border-radius:8px;background:#ffffff20;overflow:hidden}.progress i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),var(--cyan));transition:width .3s}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:13px 0}.metric{padding:13px;border:1px solid var(--stroke);border-radius:16px;background:var(--panel)}.metric-label{color:var(--muted);font-size:11px}.metric-value{margin-top:5px;font-size:19px;font-weight:900}.metric-sub{margin-top:3px;color:var(--muted);font-size:10px}.panel{padding:16px;margin:12px 0;border:1px solid var(--stroke);border-radius:18px;background:var(--panel)}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px}.panel-head h2{margin:0;font-size:15px}.section-note{color:var(--muted);font-size:11px}.btn{min-height:44px;padding:11px 14px;border:0;border-radius:13px;background:linear-gradient(135deg,#a879ff,#7354e8);font-weight:850;cursor:pointer;transition:transform .12s,filter .12s}.btn:active{transform:scale(.98);filter:brightness(.88)}.btn.full{width:100%;margin-top:9px}.btn.ghost{border:1px solid var(--stroke);background:var(--panel2);color:var(--text)}.btn.green{background:linear-gradient(135deg,#26bb84,#16875f)}.btn.warn{background:linear-gradient(135deg,#eaaa43,#ce722b)}.btn.danger{background:#71303f}.btn.small{min-height:34px;padding:7px 10px;border-radius:10px;font-size:11px}.btn:disabled{opacity:.42;cursor:not-allowed}.open-button{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 16px;font-size:15px}.open-button span:last-child{font-size:11px;opacity:.8}.stat-row{display:flex;align-items:center;gap:10px;margin:13px 0}.stat-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:#ffffff0b;font-size:17px}.stat-info{flex:1;min-width:0}.stat-top{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px;font-weight:750}.stat-top small{color:var(--muted);font-weight:600}.track{height:6px;border-radius:8px;background:#ffffff14;overflow:hidden}.track i{display:block;height:100%;border-radius:8px;background:var(--green)}.track i.mid{background:var(--gold)}.track i.low{background:var(--red)}.action-card{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--stroke)}.action-card:last-child{border-bottom:0}.action-icon{display:grid;place-items:center;flex:none;width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#ffffff14,#ffffff06);font-size:21px}.action-copy{flex:1;min-width:0}.action-copy strong{display:block;font-size:13px}.action-copy small{display:block;margin-top:4px;color:var(--muted);font-size:10px;line-height:1.35}.action-card .btn{flex:none}.price-options{display:flex;gap:8px}.price-options .btn{flex:1;padding:9px 5px}.price-options .selected{outline:2px solid var(--cyan);color:var(--cyan)}.staff-row,.ledger-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--stroke)}.staff-row:last-child,.ledger-row:last-child{border:0}.staff-meta{font-size:12px;font-weight:800}.staff-meta small{display:block;margin-top:4px;color:var(--muted);font-size:10px;font-weight:600}.badge{padding:5px 8px;border-radius:99px;background:#a879ff20;color:#ceb8ff;font-size:10px;font-weight:850}.mission{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--stroke)}.mission:last-child{border:0}.mission-icon{font-size:20px}.mission-copy{flex:1;font-size:11px;font-weight:750}.mission-copy small{display:block;margin-top:4px;color:var(--muted);font-weight:600}.mission.done .mission-copy{color:var(--green)}.tabbar{position:fixed;z-index:6;bottom:0;left:0;right:0;display:flex;justify-content:center;padding:8px 4px calc(7px + env(safe-area-inset-bottom));border-top:1px solid var(--stroke);background:color-mix(in srgb,var(--panel) 95%,transparent);backdrop-filter:blur(18px)}.tabs{display:flex;width:min(620px,100%);justify-content:space-around}.tab{display:grid;justify-items:center;gap:3px;width:20%;padding:3px 0;border:0;background:transparent;color:var(--muted);font-size:9px;font-weight:700;cursor:pointer}.tab .ico{font-size:20px}.tab.active{color:var(--cyan)}.overlay{position:fixed;z-index:20;inset:0;display:none;align-items:center;justify-content:center;padding:20px;background:#000a}.overlay.show{display:flex}.modal{width:min(390px,100%);padding:20px;border:1px solid var(--stroke);border-radius:22px;background:#1a1925;box-shadow:0 20px 70px #0009}.modal h2{margin:0 0 10px;font-size:20px}.modal p{margin:0 0 16px;color:#dedbea;font-size:13px;line-height:1.55;white-space:pre-line}.modal-actions{display:flex;gap:9px}.modal-actions .btn{flex:1}.empty{padding:12px 0;color:var(--muted);font-size:12px}.positive{color:var(--green)}.negative{color:var(--red)}@media(max-width:370px){.hero h1{font-size:21px}.hero p{max-width:83%}.metric-value{font-size:17px}.main{padding:12px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#10121f">
+  <title>Станция Ноль</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #10121f;
+      --panel: rgba(25, 28, 47, .88);
+      --text: #f3f0e9;
+      --muted: #a7a9bd;
+      --gold: #f2c879;
+      --blue: #a5c8ff;
+      --border: rgba(255,255,255,.1);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(86, 91, 157, .27), transparent 55%),
+        radial-gradient(ellipse at 90% 80%, rgba(115, 67, 117, .16), transparent 45%),
+        var(--bg);
+    }
+
+    button { font: inherit; }
+
+    .app {
+      width: min(100%, 560px);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: max(20px, env(safe-area-inset-top)) 18px
+        max(24px, env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 4px 0 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+
+    .moon {
+      width: 43px;
+      height: 43px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: rgba(255,255,255,.06);
+      color: var(--gold);
+      font-size: 23px;
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .brand-title {
+      font-weight: 750;
+      letter-spacing: .04em;
+    }
+
+    .brand-subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .reset {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      border-radius: 12px;
+      padding: 9px 11px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .sky {
+      height: 154px;
+      margin: 0 0 18px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 70% 27%, rgba(255,255,255,.9) 0 1px, transparent 2px),
+        radial-gradient(circle at 21% 40%, rgba(255,255,255,.7) 0 1px, transparent 2px),
+        radial-gradient(circle at 48% 20%, rgba(255,255,255,.65) 0 1px, transparent 2px),
+        linear-gradient(160deg, #242644, #17192a 70%);
+      background-size: auto, auto, auto, auto;
+    }
+
+    .sky::before {
+      content: "";
+      position: absolute;
+      width: 76px;
+      height: 76px;
+      right: 15%;
+      top: 21px;
+      border-radius: 50%;
+      background: #f2d89e;
+      box-shadow: 0 0 42px rgba(242,216,158,.28);
+    }
+
+    .sky::after {
+      content: "╱╲    ╱╲       ╱╲";
+      position: absolute;
+      inset: auto -6px 12px;
+      color: #0c0e18;
+      font-size: 55px;
+      letter-spacing: 8px;
+      white-space: nowrap;
+      text-shadow: 0 12px 0 #111320;
+    }
+
+    .track {
+      position: absolute;
+      z-index: 1;
+      height: 2px;
+      left: 0;
+      right: 0;
+      bottom: 20px;
+      background: rgba(242,200,121,.5);
+      box-shadow: 0 5px 0 rgba(242,200,121,.18);
+    }
+
+    .status {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 12px;
+      margin: 0 3px 12px;
+    }
+
+    .progress {
+      height: 4px;
+      border-radius: 9px;
+      background: rgba(255,255,255,.08);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 12%;
+      background: linear-gradient(90deg, var(--blue), var(--gold));
+      transition: width .4s ease;
+    }
+
+    .card {
+      flex: 1;
+      padding: 23px 20px 20px;
+      border: 1px solid var(--border);
+      border-radius: 23px;
+      background: var(--panel);
+      box-shadow: 0 18px 55px rgba(0,0,0,.2);
+      animation: appear .35s ease both;
+    }
+
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chapter {
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      font-size: 10px;
+      font-weight: 750;
+      margin-bottom: 11px;
+    }
+
+    h1 {
+      font-size: clamp(24px, 7vw, 33px);
+      line-height: 1.12;
+      margin: 0 0 16px;
+      letter-spacing: -.035em;
+    }
+
+    .story {
+      color: #dcdeea;
+      font-size: 15px;
+      line-height: 1.72;
+      white-space: pre-line;
+    }
+
+    .quote {
+      margin-top: 17px;
+      padding: 13px 15px;
+      border-left: 2px solid var(--gold);
+      border-radius: 0 12px 12px 0;
+      background: rgba(242,200,121,.07);
+      color: #f4dfb4;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .choices {
+      display: grid;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .choice {
+      width: 100%;
+      text-align: left;
+      border: 1px solid rgba(165,200,255,.2);
+      border-radius: 15px;
+      padding: 14px 15px;
+      color: var(--text);
+      background: rgba(165,200,255,.065);
+      cursor: pointer;
+      transition: transform .16s ease, background .16s ease, border-color .16s ease;
+    }
+
+    .choice:hover, .choice:focus-visible {
+      outline: none;
+      transform: translateY(-1px);
+      border-color: rgba(242,200,121,.55);
+      background: rgba(242,200,121,.1);
+    }
+
+    .choice small {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+      margin-top: 4px;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: max(25px, env(safe-area-inset-bottom));
+      transform: translate(-50%, 20px);
+      padding: 11px 16px;
+      background: #f2c879;
+      color: #171522;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 13px;
+      opacity: 0;
+      pointer-events: none;
+      transition: .25s ease;
+      z-index: 5;
+      width: max-content;
+      max-width: calc(100% - 32px);
+      text-align: center;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    footer {
+      color: rgba(167,169,189,.65);
+      font-size: 11px;
+      text-align: center;
+      padding-top: 16px;
+    }
+
+    @media (max-height: 700px) {
+      .sky { height: 112px; }
+      .sky::before { width: 58px; height: 58px; }
+      .card { padding-top: 18px; }
+    }
+  </style>
 </head>
+
 <body>
-<div class="shell">
-<header><div class="brand">PIX<span>EL</span></div><div class="day-chip" id="day-label">ДЕНЬ 1</div><div class="wallet"><small>Баланс клуба</small><span id="cash-label">50 000 ₽</span></div></header>
-<main class="main">
-<section class="page active" id="page-home">
-<div class="hero"><div class="eyebrow" id="club-tag">НОВЫЙ КЛУБ · РАНГ 1</div><h1 id="club-name">PIXEL: твоя легенда</h1><p>Построй лучший игровой клуб города. Развивай зал, радуй гостей и поднимай репутацию.</p><div class="level-line"><span id="xp-label">Опыт клуба · 0 / 100</span><span id="rank-label">⭐ 1</span></div><div class="progress"><i id="xp-bar" style="width:0%"></i></div></div>
-<div class="grid"><div class="metric"><div class="metric-label">⭐ Репутация</div><div class="metric-value" id="rep-value">10</div><div class="metric-sub">Привлекает гостей</div></div><div class="metric"><div class="metric-label">🖥️ Игровые места</div><div class="metric-value" id="pc-value">5</div><div class="metric-sub">Загрузка зала</div></div><div class="metric"><div class="metric-label">👥 Гости сегодня</div><div class="metric-value" id="guest-value">—</div><div class="metric-sub">Открой день, чтобы узнать</div></div><div class="metric"><div class="metric-label">📈 Последний итог</div><div class="metric-value" id="profit-value">—</div><div class="metric-sub" id="profit-caption">Баланс за игровой день</div></div></div>
-<div class="panel"><div class="panel-head"><h2>Состояние клуба</h2><span class="section-note">Следи за залом</span></div><div class="stat-row"><div class="stat-icon">🧹</div><div class="stat-info"><div class="stat-top"><span>Чистота</span><small id="clean-label">80 / 100</small></div><div class="track"><i id="clean-track"></i></div></div></div><div class="stat-row"><div class="stat-icon">⚡</div><div class="stat-info"><div class="stat-top"><span>Техника</span><small id="tech-label">40 / 100</small></div><div class="track"><i id="tech-track"></i></div></div></div><div class="stat-row"><div class="stat-icon">📶</div><div class="stat-info"><div class="stat-top"><span>Интернет</span><small id="net-label">55 / 100</small></div><div class="track"><i id="net-track"></i></div></div></div></div>
-<button class="btn full open-button" id="open-day"><span>🚀 Открыть клуб на день</span><span>Собрать выручку →</span></button>
-<div class="panel"><div class="panel-head"><h2>Задания дня</h2><span class="badge" id="mission-count">0 / 3</span></div><div id="missions"></div></div>
-</section>
-<section class="page" id="page-upgrades"><div class="panel"><div class="panel-head"><h2>🛠 Развитие клуба</h2><span class="section-note">Улучшения навсегда</span></div><div id="upgrade-list"></div></div><div class="panel"><div class="panel-head"><h2>🎟 Цена для гостей</h2><span class="section-note">Цена за час</span></div><p class="section-note">Высокая цена даёт больше выручки, но может отпугнуть часть гостей.</p><div class="price-options" style="margin-top:12px"><button class="btn ghost" data-price="100">100 ₽</button><button class="btn ghost" data-price="150">150 ₽</button><button class="btn ghost" data-price="200">200 ₽</button></div></div></section>
-<section class="page" id="page-team"><div class="panel"><div class="panel-head"><h2>👾 Команда клуба</h2><span class="section-note">Зарплата за день</span></div><div id="staff-list"></div></div><div class="panel"><div class="panel-head"><h2>Найти сотрудника</h2></div><div class="action-card"><div class="action-icon">🧑‍💻</div><div class="action-copy"><strong>Администратор</strong><small>Плюс к репутации и сервису. 30 000 ₽/мес</small></div><button class="btn small" data-hire="admin">Нанять</button></div><div class="action-card"><div class="action-icon">🛡️</div><div class="action-copy"><strong>Охранник</strong><small>Защищает клуб от неприятностей. 40 000 ₽/мес</small></div><button class="btn small" data-hire="guard">Нанять</button></div></div><div class="panel"><div class="panel-head"><h2>🏦 Финансы</h2><span class="section-note" id="debt-label">Долг: 0 ₽</span></div><p class="section-note">Один кредит на развитие. Проценты небольшие и начисляются за игровой день.</p><button class="btn full green" id="loan-button">Взять кредит · 100 000 ₽</button><button class="btn full ghost" id="repay-button" hidden>Погасить кредит</button></div></section>
-<section class="page" id="page-records"><div class="panel"><div class="panel-head"><h2>🏆 Достижения</h2><span class="badge" id="ach-count">0 / 6</span></div><div id="achievements"></div></div><div class="panel"><div class="panel-head"><h2>📒 Последние дни</h2></div><div id="ledger"></div></div><div class="panel"><div class="panel-head"><h2>⚙️ Настройки</h2></div><p class="section-note">Прогресс сохраняется в браузере этого устройства.</p><button class="btn full danger" id="reset-button">Начать новую игру</button></div></section>
-</main></div>
-<nav class="tabbar" aria-label="Разделы"><div class="tabs"><button class="tab active" data-page="home"><span class="ico">🏠</span><span>Клуб</span></button><button class="tab" data-page="upgrades"><span class="ico">🛠</span><span>Развитие</span></button><button class="tab" data-page="team"><span class="ico">👾</span><span>Команда</span></button><button class="tab" data-page="records"><span class="ico">🏆</span><span>Журнал</span></button></div></nav>
-<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="modal"><h2 id="modal-title"></h2><p id="modal-text"></p><div class="modal-actions"><button class="btn" id="modal-confirm">Понятно</button><button class="btn ghost" id="modal-cancel" hidden>Отмена</button></div></div></div>
-<script>
-(()=>{'use strict';
-const tg=window.Telegram?.WebApp||null,KEY='pixelGame_v4',OLD_KEY='pixelGame_v3';
-const base=()=>({version:4,day:1,money:50000,loan:0,reputation:10,price:150,pcs:5,clean:80,tech:55,internet:55,marketing:0,decor:0,security:0,staff:[{name:'Соня',role:'Администратор',salary:30000,type:'admin'},{name:'Артём',role:'Охранник',salary:40000,type:'guard'}],xp:0,totalProfit:0,daysPlayed:0,lastGuests:null,lastProfit:null,missions:{},achievements:[],ledger:[]});
-const clamp=(v,min,max,d)=>Number.isFinite(Number(v))?Math.min(max,Math.max(min,Number(v))):d;
-function load(){try{let s=JSON.parse(localStorage.getItem(KEY)||'null');if(!s){const old=JSON.parse(localStorage.getItem(OLD_KEY)||'null');if(old){s={...base(),day:old.day,money:old.money,loan:old.loan,reputation:old.reputation,price:old.pricePerHour,pcs:old.pcs,clean:old.stats?.cleanliness,tech:old.stats?.tech,staff:old.staff};}}if(!s||typeof s!=='object')return base();const d=base();return{...d,...s,day:Math.max(1,Math.floor(Number(s.day)||1)),money:clamp(s.money,0,1e12,d.money),loan:clamp(s.loan,0,1e12,0),reputation:clamp(s.reputation,0,100,d.reputation),price:[100,150,200].includes(Number(s.price))?Number(s.price):[100,150,200].includes(Number(s.pricePerHour))?Number(s.pricePerHour):150,pcs:Math.max(1,Math.floor(Number(s.pcs)||5)),clean:clamp(s.clean??s.stats?.cleanliness,0,100,80),tech:clamp(s.tech??s.stats?.tech,0,100,55),internet:clamp(s.internet,0,100,55),marketing:Math.max(0,Math.floor(Number(s.marketing)||0)),decor:Math.max(0,Math.floor(Number(s.decor)||0)),security:Math.max(0,Math.floor(Number(s.security)||0)),staff:Array.isArray(s.staff)?s.staff.filter(x=>x&&typeof x==='object').map(x=>({name:String(x.name||'Сотрудник'),role:String(x.role||'Сотрудник'),salary:Math.max(0,Number(x.salary)||0),type:x.type||'staff'})):d.staff,xp:Math.max(0,Number(s.xp)||0),totalProfit:Number(s.totalProfit)||0,daysPlayed:Number(s.daysPlayed)||0,missions:s.missions&&typeof s.missions==='object'?s.missions:{},achievements:Array.isArray(s.achievements)?s.achievements:[],ledger:Array.isArray(s.ledger)?s.ledger.slice(0,8):[]}}catch(_){return base()}}
-let s=load();const $=id=>document.getElementById(id);const fmt=n=>`${Math.floor(n).toLocaleString('ru-RU')} ₽`;const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){console.warn('Сохранение недоступно',e)}};
-function modal(title,text,yes=null,no=null){$('modal-title').textContent=title;$('modal-text').textContent=text;const a=$('modal-confirm'),b=$('modal-cancel');a.textContent=yes?'Подтвердить':'Понятно';a.onclick=()=>{hideModal();yes?.()};b.hidden=!no;b.textContent='Отмена';b.onclick=()=>{hideModal();no?.()};$('overlay').classList.add('show')}
-function hideModal(){$('overlay').classList.remove('show')}function haptic(){try{tg?.HapticFeedback?.impactOccurred('light')}catch(_){}}
-const upgrades=[{id:'pcs',icon:'🖥️',title:'Игровые компьютеры',desc:'Ещё места — больше гостей и оборот.',cost:22000,stat:'pc'}, {id:'tech',icon:'⚡',title:'Апгрейд техники',desc:'Мощные сборки улучшают впечатление гостей.',cost:12000,stat:'tech'}, {id:'internet',icon:'📶',title:'Быстрый интернет',desc:'Никаких лагов: гости дольше остаются в клубе.',cost:9000,stat:'internet'}, {id:'marketing',icon:'📣',title:'Реклама в городе',desc:'Приводит больше новых гостей каждый день.',cost:14000,stat:'marketing'}, {id:'decor',icon:'✨',title:'Неоновый интерьер',desc:'Повышает престиж и средний чек клуба.',cost:18000,stat:'decor'}, {id:'security',icon:'🛡️',title:'Система безопасности',desc:'Меньше случайных поломок и потерь.',cost:16000,stat:'security'}];
-function bar(id,value){const el=$(id);el.style.width=`${value}%`;el.className=`${value<30?'low':value<55?'mid':''}`}
-function achDefs(){return[{id:'first_day',icon:'🎉',title:'Первый день',ok:s.daysPlayed>=1},{id:'five_days',icon:'📆',title:'Своя постоянка',ok:s.daysPlayed>=5},{id:'rep_25',icon:'⭐',title:'На слуху',ok:s.reputation>=25},{id:'pcs_10',icon:'🖥️',title:'Компьютерный магнат',ok:s.pcs>=10},{id:'cash_100k',icon:'💎',title:'Первый капитал',ok:s.money>=100000},{id:'profit_100k',icon:'📈',title:'Бизнес пошёл',ok:s.totalProfit>=100000}]}
-function missions(){const m=s.missions||{};return[{id:'open',icon:'🌅',text:'Открой клуб на день',sub:`${Math.min(m.open||0,1)} / 1`,done:(m.open||0)>=1},{id:'upgrade',icon:'🔧',text:'Купи любое улучшение',sub:`${Math.min(m.upgrade||0,1)} / 1`,done:(m.upgrade||0)>=1},{id:'profit',icon:'💰',text:'Заработай 5 000 ₽ за день',sub:`${Math.min(m.profit||0,5000).toLocaleString('ru-RU')} / 5 000 ₽`,done:(m.profit||0)>=5000}]}
-function render(){ $('cash-label').textContent=fmt(s.money);$('day-label').textContent=`ДЕНЬ ${s.day}`;$('rep-value').textContent=s.reputation;$('pc-value').textContent=s.pcs;$('guest-value').textContent=s.lastGuests??'—';$('profit-value').textContent=s.lastProfit===null?'—':`${s.lastProfit>=0?'+':''}${fmt(s.lastProfit)}`;$('profit-value').className=`metric-value ${s.lastProfit===null?'':s.lastProfit>=0?'positive':'negative'}`;$('profit-caption').textContent=s.lastProfit===null?'Баланс за игровой день':`День ${Math.max(1,s.day-1)} · ${s.daysPlayed} смен`;$('clean-label').textContent=`${s.clean} / 100`;$('tech-label').textContent=`${s.tech} / 100`;$('net-label').textContent=`${s.internet} / 100`;bar('clean-track',s.clean);bar('tech-track',s.tech);bar('net-track',s.internet);const rank=1+Math.floor(s.xp/100),xp=s.xp%100;$('rank-label').textContent=`⭐ ${rank}`;$('club-tag').textContent=`NEON CLUB · РАНГ ${rank}`;$('xp-label').textContent=`Опыт клуба · ${xp} / 100`;$('xp-bar').style.width=`${xp}%`;
-const ml=$('missions');ml.replaceChildren();let done=0;missions().forEach(m=>{if(m.done)done++;const row=document.createElement('div');row.className=`mission${m.done?' done':''}`;row.innerHTML=`<span class="mission-icon">${m.done?'✅':m.icon}</span><div class="mission-copy">${m.text}<small>${m.sub}</small></div>`;ml.append(row)});$('mission-count').textContent=`${done} / 3`;
-const ul=$('upgrade-list');ul.replaceChildren();upgrades.forEach(u=>{const level=u.id==='pcs'?s.pcs-5:s[u.id];const cost=Math.floor(u.cost*Math.pow(1.38,Math.max(0,level)));const row=document.createElement('div');row.className='action-card';const ico=document.createElement('div');ico.className='action-icon';ico.textContent=u.icon;const copy=document.createElement('div');copy.className='action-copy';const strong=document.createElement('strong');strong.textContent=u.title;const small=document.createElement('small');small.textContent=`Уровень ${Math.max(0,level)} · ${u.desc}`;copy.append(strong,small);const b=document.createElement('button');b.className='btn small';b.textContent=`${fmt(cost)}`;b.disabled=s.money<cost;b.addEventListener('click',()=>buyUpgrade(u,cost));row.append(ico,copy,b);ul.append(row)});
-const sl=$('staff-list');sl.replaceChildren();if(!s.staff.length){const e=document.createElement('div');e.className='empty';e.textContent='Пока в клубе нет сотрудников.';sl.append(e)}s.staff.forEach((p,i)=>{const row=document.createElement('div');row.className='staff-row';const label=document.createElement('div');label.className='staff-meta';label.textContent=`${p.name} · ${p.role}`;const small=document.createElement('small');small.textContent=`${fmt(p.salary)}/мес · ${fmt(p.salary/30)}/день`;label.append(small);const fire=document.createElement('button');fire.className='btn small ghost';fire.textContent='Уволить';fire.addEventListener('click',()=>{s.staff.splice(i,1);save();render();modal('Команда',`${p.name} больше не работает в клубе.`)});row.append(label,fire);sl.append(row)});
-$('debt-label').textContent=`Долг: ${fmt(s.loan)}`;$('loan-button').hidden=s.loan>0;$('repay-button').hidden=s.loan<=0;$('repay-button').textContent=`Погасить долг · ${fmt(s.loan)}`;$('repay-button').disabled=s.money<s.loan;
-document.querySelectorAll('[data-price]').forEach(b=>b.classList.toggle('selected',Number(b.dataset.price)===s.price));const ads=achDefs();$('ach-count').textContent=`${ads.filter(a=>s.achievements.includes(a.id)).length} / ${ads.length}`;const al=$('achievements');al.replaceChildren();ads.forEach(a=>{const unlocked=s.achievements.includes(a.id);const row=document.createElement('div');row.className=`mission${unlocked?' done':''}`;row.innerHTML=`<span class="mission-icon">${unlocked?a.icon:'🔒'}</span><div class="mission-copy">${a.title}<small>${unlocked?'Получено':'Выполни условие, чтобы открыть'}</small></div>`;al.append(row)});const ledger=$('ledger');ledger.replaceChildren();if(!s.ledger.length){const e=document.createElement('div');e.className='empty';e.textContent='Открой первый день — здесь появится финансовый отчёт.';ledger.append(e)}s.ledger.forEach(x=>{const row=document.createElement('div');row.className='ledger-row';const left=document.createElement('span');left.className='staff-meta';left.textContent=`День ${x.day} · ${x.guests} гостей`;const right=document.createElement('strong');right.className=x.profit>=0?'positive':'negative';right.textContent=`${x.profit>=0?'+':''}${fmt(x.profit)}`;row.append(left,right);ledger.append(row)})}
-function checkAchievements(){const fresh=achDefs().filter(a=>a.ok&&!s.achievements.includes(a.id));fresh.forEach(a=>s.achievements.push(a.id));return fresh}
-function buyUpgrade(u,cost){if(s.money<cost)return modal('Не хватает денег',`Нужно ещё ${fmt(cost-s.money)}.`);s.money-=cost;if(u.id==='pcs')s.pcs++;else if(u.id==='tech')s.tech=Math.min(100,s.tech+18);else if(u.id==='internet')s.internet=Math.min(100,s.internet+20);else s[u.id]++;s.xp+=25;s.missions.upgrade=(s.missions.upgrade||0)+1;save();render();haptic();modal('Улучшение куплено!',`${u.icon} ${u.title} улучшено. Клуб стал сильнее.`)}
-function spend(cost){if(s.money<cost){modal('Не хватает денег',`Нужно ${fmt(cost)}.`);return false}s.money-=cost;return true}
-document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===`page-${b.dataset.page}`));document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t===b));haptic()}));
-document.querySelectorAll('[data-price]').forEach(b=>b.addEventListener('click',()=>{s.price=Number(b.dataset.price);save();render();haptic()}));
-document.querySelectorAll('[data-hire]').forEach(b=>b.addEventListener('click',()=>{const guard=b.dataset.hire==='guard',salary=guard?40000:30000;if(!spend(salary))return;s.staff.push({name:guard?'Новый охранник':'Новый администратор',role:guard?'Охранник':'Администратор',salary,type:b.dataset.hire});s.xp+=10;save();render();modal('Новый сотрудник!',`${guard?'Охранник':'Администратор'} выходит на смену.`)}));
-$('loan-button').addEventListener('click',()=>{if(s.loan)return;s.money+=100000;s.loan=115000;save();render();modal('Кредит одобрен','На счёт поступило 100 000 ₽. Долг — 115 000 ₽. Процент за день: 1%.')});$('repay-button').addEventListener('click',()=>{if(s.money<s.loan)return modal('Не хватает денег',`Для погашения нужно ${fmt(s.loan)}.`);s.money-=s.loan;s.loan=0;save();render();modal('Кредит закрыт','Отлично — больше никаких процентов!')});
-$('open-day').addEventListener('click',()=>{let guests=18+Math.floor(s.reputation*.65)+Math.floor(s.clean/8)+s.pcs*2+Math.floor(s.tech/20)+Math.floor(s.internet/25)+s.marketing*3+s.decor*2+s.staff.filter(p=>p.type==='admin').length*2;if(s.price===100)guests+=7;if(s.price===200)guests-=Math.floor(guests*.2);if(s.tech<25)guests-=8;if(s.internet<20)guests-=7;guests=Math.max(1,Math.min(guests,s.pcs*12));const income=guests*s.price*2;const wages=s.staff.reduce((n,p)=>n+p.salary/30,0);const tax=Math.floor(income*.08);const rent=1800;let eventCost=0,eventText='';if(Math.random()<.12&&s.security<2){eventCost=Math.min(Math.floor(s.money*.08),3000);eventText=`\n⚠️ Небольшая поломка: −${fmt(eventCost)}.`}const interest=s.loan?Math.floor(s.loan*.01):0;const expense=wages+tax+rent+eventCost+interest;const profit=income-expense;s.money=Math.max(0,s.money+profit);if(s.loan)s.loan+=interest;s.day++;s.daysPlayed++;s.lastGuests=guests;s.lastProfit=profit;s.totalProfit+=Math.max(0,profit);s.xp+=Math.max(5,Math.floor(guests/2));s.clean=Math.max(0,s.clean-Math.floor(Math.random()*7+3));s.tech=Math.max(0,s.tech-Math.floor(Math.random()*5+2));s.internet=Math.max(0,s.internet-Math.floor(Math.random()*3+1));if(s.clean<35||s.tech<25||s.internet<15)s.reputation=Math.max(0,s.reputation-2);else s.reputation=Math.min(100,s.reputation+1);s.missions.open=(s.missions.open||0)+1;s.missions.profit=(s.missions.profit||0)+Math.max(0,profit);s.ledger.unshift({day:s.day-1,guests,profit});s.ledger=s.ledger.slice(0,8);const unlocked=checkAchievements();save();render();haptic();let report=`👥 Гостей: ${guests}\n💰 Выручка: +${fmt(income)}\n📉 Расходы: −${fmt(expense)} (аренда ${fmt(rent)}, зарплата ${fmt(wages)}, налог ${fmt(tax)}${interest?`, кредит ${fmt(interest)}`:''})\n${profit>=0?'✅ Прибыль':'❌ Убыток'} за день: ${profit>=0?'+':''}${fmt(profit)}${eventText}`;if(unlocked.length)report+=`\n\n🏆 Достижение: ${unlocked.map(a=>a.title).join(', ')}`;const completed=missions().filter(m=>m.done).length;if(completed===3){const reward=5000;s.money+=reward;s.missions={open:0,upgrade:0,profit:0};report+=`\n\n🎯 Все задания выполнены! Бонус: +${fmt(reward)}. Задания обновлены.`;save();render()}modal(`Смена завершена · День ${s.day-1}`,report)});
-$('reset-button').addEventListener('click',()=>modal('Начать заново?','Сохранение текущего клуба будет удалено.',()=>{s=base();save();render();modal('Новая игра','Добро пожаловать в PIXEL. Построй свой клуб с нуля!')} ,()=>{}));$('overlay').addEventListener('click',e=>{if(e.target===$('overlay'))hideModal()});document.addEventListener('keydown',e=>{if(e.key==='Escape')hideModal()});try{tg?.ready();tg?.expand();tg?.setHeaderColor?.('bg_color');tg?.setBackgroundColor?.('bg_color')}catch(_){}render();save();
-})();
-</script>
+  <main class="app">
+    <header>
+      <div class="brand">
+        <button class="moon" id="moon" aria-label="Луна">☾</button>
+        <div>
+          <div class="brand-title">СТАНЦИЯ НОЛЬ</div>
+          <div class="brand-subtitle">история, которая помнит тебя</div>
+        </div>
+      </div>
+      <button class="reset" id="reset">Начать заново</button>
+    </header>
+
+    <div class="sky" aria-hidden="true"><div class="track"></div></div>
+
+    <div class="status">
+      <span id="chapterLabel">Ночная смена</span>
+      <span id="memoryLabel">Память: 0/3</span>
+    </div>
+
+    <div class="progress"><div class="progress-fill" id="progress"></div></div>
+
+    <section class="card" id="card" aria-live="polite"></section>
+
+    <footer>Некоторые двери открываются только тем, кто внимательно смотрит на луну.</footer>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const SAVE_KEY = "station-zero-save-v1";
+
+    const scenes = {
+      start: {
+        chapter: "Пролог · 02:17",
+        title: "Поезд, которого нет",
+        text: "На пустой станции гаснут все фонари, кроме одного.\n\nИз темноты выходит поезд без номера. В окне последнего вагона кто-то пишет пальцем на запотевшем стекле: «Ты опоздал. Или ещё нет?»",
+        quote: "Голос из старого громкоговорителя: «Пассажир, назовите станцию назначения».",
+        progress: 10,
+        choices: [
+          { label: "Ответить: «Домой»", note: "Ты не уверен, что помнишь дорогу.", next: "platform", effect: { memory: 1 } },
+          { label: "Спросить, кто пишет в окне", note: "Иногда правильный вопрос страшнее ответа.", next: "window", effect: { asked: true } }
+        ]
+      },
+
+      window: {
+        chapter: "Вагон · последнее окно",
+        title: "Твоим почерком",
+        text: "За стеклом стоит девочка в жёлтом шарфе. Ты не видишь её лица, но узнаёшь почерк на стекле.\n\nОна поднимает ладонь. На её запястье — такие же часы, как у тебя. Они остановились на 02:17.",
+        quote: "«Не верь расписанию. Оно составлено для тех, кто уже уехал».",
+        progress: 23,
+        choices: [
+          { label: "Показать ей свои часы", next: "platform", effect: { memory: 1, sawGirl: true } },
+          { label: "Отойти и осмотреть платформу", next: "platform", effect: { cautious: true } }
+        ]
+      },
+
+      platform: {
+        chapter: "Глава I · платформа",
+        title: "Станция без имени",
+        text: "Двери открываются. На платформе стоят три фонаря, но свет падает только от двух.\n\nПод скамьёй ты находишь медный жетон с надписью «Ноль». На обратной стороне нацарапано: «Если забыл — вспомни звук».",
+        quote: "Из тоннеля доносится мелодия, которую ты давно не слышал.",
+        progress: 42,
+        choices: [
+          { label: "Поднять жетон и идти на звук", note: "Мелодия кажется знакомой.", next: "signal", effect: { token: true, memory: 1 } },
+          { label: "Проверить дверь дежурного", note: "Вдруг там есть расписание.", next: "booth", effect: { token: true } }
+        ]
+      },
+
+      booth: {
+        chapter: "Комната дежурного",
+        title: "Запись в журнале",
+        text: "В журнале ровно одна запись. Дата сегодняшняя, хотя чернила выцвели:\n\n«Когда поезд вернётся, не спрашивай, кто пассажир. Спроси, кого он ждёт».\n\nРядом лежит ключ с крошечной звёздочкой.",
+        quote: "В зеркале за спиной на секунду отражается не комната, а море.",
+        progress: 57,
+        choices: [
+          { label: "Взять ключ и вернуться к тоннелю", next: "signal", effect: { key: true } },
+          { label: "Посмотреть в зеркало ещё раз", note: "Отражение может знать больше тебя.", next: "mirror", effect: { memory: 1 } }
+        ]
+      },
+
+      mirror: {
+        chapter: "Отражение",
+        title: "Море внутри зеркала",
+        text: "В отражении ты видишь ребёнка, который запускает бумажный кораблик. На парусе написано твоё имя.\n\nКораблик исчезает в волне, и на стекле проступает короткая фраза: «Ты обещал вернуться за мной».",
+        quote: "Кажется, поезд не увозит тебя. Он пытается что-то вернуть.",
+        progress: 67,
+        choices: [
+          { label: "Не забыть обещание и идти дальше", next: "signal", effect: { promise: true } }
+        ]
+      },
+
+      signal: {
+        chapter: "Глава II · голос в тоннеле",
+        title: "Мелодия из детства",
+        text: "В тоннеле звучит колыбельная. Ты узнаёшь её, но не можешь вспомнить, кто пел.\n\nУ стены — маленькая дверь. Медный жетон подходит к замку, а найденный ключ — к замочной скважине со звёздочкой.",
+        quote: "За дверью тихо стучат три раза. Потом — ещё один.",
+        progress: 80,
+        choices: [
+          { label: "Открыть дверь жетоном", note: "На жетоне будто проступает слово «мама».", next: "ending_home", effect: { memory: 1 } },
+          { label: "Постучать в ответ: три раза и один", note: "Повторить ритм из-за двери.", next: "ending_reunion", effect: { memory: 1 } },
+          { label: "Вставить ключ со звёздочкой", note: "Этот выбор откроется, если ты нашёл ключ.", next: "ending_star", effect: { starDoor: true }, requires: "key" }
+        ]
+      },
+
+      ending_home: {
+        chapter: "Концовка · домой",
+        title: "Утро на знакомой улице",
+        text: "Дверь открывается — и за ней не тоннель, а твой старый двор на рассвете.\n\nКолыбельная звучит уже совсем рядом. На подоконнике лежит медный жетон. Теперь на нём написано не «Ноль», а «Помни».\n\nТы просыпаешься с ощущением, что впервые за долгое время пришёл вовремя.",
+        quote: "Концовка: «Домой». Но кто именно ждал тебя за дверью?",
+        progress: 100,
+        ending: true
+      },
+
+      ending_reunion: {
+        chapter: "Концовка · обещание",
+        title: "Четвёртый стук",
+        text: "Из-за двери отвечают тем же ритмом: три раза и один.\n\nДевочка в жёлтом шарфе выходит из темноты. Теперь ты видишь её лицо — это ты, только намного младше.\n\n«Ты всё-таки вернулся», — говорит она. Поезд впервые за ночь включает свет во всех окнах.",
+        quote: "Концовка: «Я помню». Иногда этого достаточно, чтобы найти дорогу.",
+        progress: 100,
+        ending: true
+      },
+
+      ending_star: {
+        chapter: "Концовка · звёздная дверь",
+        title: "Море над рельсами",
+        text: "Ключ поворачивается. Дверь распахивается в ночное море, полное звёзд.\n\nНа берегу ждёт бумажный кораблик из твоего детства. Ты запускаешь его по волне, и поезд тихо уходит в небо.\n\nНа следующее утро на станции появляется новое расписание. В нём есть только один рейс: «Туда, где тебя помнят».",
+        quote: "Особая концовка: «Звёздный берег». Ты собрал ключ и не забыл обещание.",
+        progress: 100,
+        ending: true,
+        requires: "promise"
+      },
+
+      ending_secret: {
+        chapter: "Секретная концовка · 0417",
+        title: "Не поезд, а воспоминание",
+        text: "Ты нажимаешь на луну семь раз. Она мерцает, как старый фонарь.\n\nЗа дверью вместо вагона — тихая комната, запах чая и голос, который ты пытался вспомнить всю ночь. На столе лежит билет без даты.\n\n«Теперь ты знаешь, — говорит голос. — Станция не держит тебя. Она помогает попрощаться».\n\nПоезд растворяется в утреннем тумане.",
+        quote: "Секретная концовка: «Станция помнит». Луна открыла тебе то, что не было написано в расписании.",
+        progress: 100,
+        ending: true
+      }
+    };
+
+    const freshState = () => ({
+      scene: "start",
+      memory: 0,
+      flags: {},
+      moonTaps: 0,
+      secret: false
+    });
+
+    let state;
+    try {
+      state = { ...freshState(), ...JSON.parse(localStorage.getItem(SAVE_KEY) || "{}") };
+    } catch {
+      state = freshState();
+    }
+
+    const card = document.getElementById("card");
+    const toast = document.getElementById("toast");
+    let toastTimer;
+
+    function save() {
+      localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
+    }
+
+    function isAvailable(choice) {
+      if (!choice.requires) return true;
+      if (choice.requires === "key") return !!state.flags.key;
+      if (choice.requires === "promise") return !!state.flags.promise;
+      return !!state.flags[choice.requires];
+    }
+
+    function render() {
+      const scene = scenes[state.scene] || scenes.start;
+
+      document.getElementById("chapterLabel").textContent = scene.chapter;
+      document.getElementById("memoryLabel").textContent = `Память: ${Math.min(state.memory, 3)}/3`;
+      document.getElementById("progress").style.width = `${scene.progress || 10}%`;
+
+      const choices = scene.ending
+        ? [{ label: "Сесть на поезд ещё раз", note: "История начнётся заново. Пасхалка останется открытой.", next: "start", restart: true }]
+        : (scene.choices || []).filter(isAvailable);
+
+      card.innerHTML = `
+        <div class="chapter">${scene.chapter}</div>
+        <h1>${scene.title}</h1>
+        <div class="story">${scene.text}</div>
+        ${scene.quote ? `<div class="quote">${scene.quote}</div>` : ""}
+        <div class="choices">
+          ${choices.map((choice, index) => `
+            <button class="choice" data-choice="${index}">
+              ${choice.label}
+              ${choice.note ? `<small>${choice.note}</small>` : ""}
+            </button>
+          `).join("")}
+        </div>
+      `;
+
+      card.querySelectorAll(".choice").forEach((button, index) => {
+        button.addEventListener("click", () => choose(choices[index]));
+      });
+    }
+
+    function choose(choice) {
+      if (choice.restart) {
+        const keepSecret = state.secret;
+        state = freshState();
+        state.secret = keepSecret;
+        save();
+        render();
+        return;
+      }
+
+      if (choice.effect) {
+        if (choice.effect.memory) state.memory += choice.effect.memory;
+        for (const [key, value] of Object.entries(choice.effect)) {
+          if (key !== "memory" && value === true) state.flags[key] = true;
+        }
+      }
+
+      state.scene = choice.next;
+      save();
+      render();
+    }
+
+    document.getElementById("moon").addEventListener("click", () => {
+      state.moonTaps += 1;
+
+      if (state.moonTaps >= 7 && !state.secret) {
+        state.secret = true;
+        save();
+        showToast("Пасхалка открыта: луна знает секретную дорогу.");
+        render();
+      } else if (state.moonTaps < 7) {
+        showToast(`Луна мерцает… ${state.moonTaps}/7`);
+      }
+    });
+
+    document.getElementById("reset").addEventListener("click", () => {
+      const keepSecret = state.secret;
+      state = freshState();
+      state.secret = keepSecret;
+      save();
+      render();
+      showToast("История началась сначала.");
+    });
+
+    // Секретная концовка появляется после семи нажатий на луну.
+    // Добавляем путь к ней на сцене с голосом в тоннеле.
+    const originalSignalChoices = scenes.signal.choices;
+    scenes.signal.choices = originalSignalChoices;
+
+    const originalRender = render;
+    render = function () {
+      originalRender();
+
+      if (state.scene === "signal" && state.secret) {
+        const secretButton = document.createElement("button");
+        secretButton.className = "choice";
+        secretButton.innerHTML = 'Произнести: «0417»<small>Секретный код, которого нет в расписании.</small>';
+        secretButton.addEventListener("click", () => {
+          state.scene = "ending_secret";
+          save();
+          render();
+        });
+        card.querySelector(".choices").appendChild(secretButton);
+      }
+    };
+
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      tg.setHeaderColor("#10121f");
+      tg.setBackgroundColor("#10121f");
+    }
+
+    render();
+  </script>
 </body>
 </html>
