@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#11131b">
-  <title>Дело №17 — Ночной музей</title>
+  <title>Дело №17: Ночной музей</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
@@ -19,7 +19,6 @@
       --gold: #efc477;
       --cyan: #a2dde0;
       --green: #9bd6a3;
-      --red: #ef8880;
     }
 
     * { box-sizing: border-box; }
@@ -35,35 +34,33 @@
     }
 
     button, input { font: inherit; }
-
     button { -webkit-tap-highlight-color: transparent; }
 
     .app {
-      width: min(100%, 620px);
-      min-height: 100vh;
+      width: min(100%, 720px);
       margin: auto;
-      padding: max(15px, env(safe-area-inset-top)) 14px
-        max(24px, env(safe-area-inset-bottom));
+      padding: max(14px, env(safe-area-inset-top)) 12px
+        max(20px, env(safe-area-inset-bottom));
     }
 
-    header, .row, .room-heading {
+    header, .row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
     }
 
     .eyebrow {
       color: var(--gold);
       font-size: 10px;
-      letter-spacing: .16em;
+      letter-spacing: .15em;
       text-transform: uppercase;
       font-weight: 850;
     }
 
-    h1 { margin: 4px 0 0; font-size: 22px; }
+    h1 { margin: 3px 0 0; font-size: 21px; }
 
-    .reset, .tab, .room-btn, .secondary {
+    .reset, .tab, .secondary {
       border: 1px solid var(--line);
       color: var(--muted);
       background: #191c26;
@@ -71,153 +68,134 @@
       cursor: pointer;
     }
 
-    .reset { padding: 9px 11px; font-size: 12px; }
+    .reset { padding: 9px 10px; font-size: 12px; }
 
     .mission {
-      margin: 14px 0 12px;
-      padding: 12px 14px;
-      border: 1px solid rgba(239,196,119,.25);
-      border-radius: 14px;
-      background: rgba(239,196,119,.07);
+      margin: 12px 0;
+      padding: 11px 13px;
+      border: 1px solid #efc47744;
+      border-radius: 13px;
+      background: #efc4770d;
       color: #e8dfcd;
-      font-size: 13px;
+      font-size: 12px;
       line-height: 1.45;
     }
 
     .mission b { color: var(--gold); }
 
-    .stats {
+    .game-window {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: #1b1e29;
+      box-shadow: 0 16px 40px #0004;
+    }
+
+    .scene-info {
       display: flex;
+      align-items: center;
       justify-content: space-between;
       gap: 10px;
-      margin-bottom: 12px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .scene-info strong { color: var(--gold); }
+
+    canvas {
+      display: block;
+      width: 100%;
+      aspect-ratio: 900 / 520;
+      background: #252735;
+      touch-action: none;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-top: 1px solid var(--line);
+    }
+
+    .dpad {
+      display: grid;
+      grid-template-columns: repeat(3, 43px);
+      grid-template-rows: repeat(2, 39px);
+      gap: 4px;
+      justify-content: center;
+    }
+
+    .move {
+      border: 1px solid #444a5d;
+      border-radius: 11px;
+      color: var(--text);
+      background: #272b38;
+      font-size: 18px;
+      font-weight: 800;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .move:active { background: #454052; color: var(--gold); }
+
+    .move.up { grid-column: 2; grid-row: 1; }
+    .move.left { grid-column: 1; grid-row: 2; }
+    .move.down { grid-column: 2; grid-row: 2; }
+    .move.right { grid-column: 3; grid-row: 2; }
+
+    .interact {
+      min-width: 128px;
+      min-height: 56px;
+      border: 0;
+      border-radius: 13px;
+      color: #171820;
+      background: var(--gold);
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .interact:disabled {
+      color: #a1a1a1;
+      background: #343743;
+      cursor: default;
+    }
+
+    .help {
+      padding: 0 12px 11px;
       color: var(--muted);
       font-size: 11px;
+      line-height: 1.4;
     }
 
     .tabs {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 7px;
-      margin-bottom: 12px;
+      margin: 12px 0 9px;
     }
 
     .tab { padding: 10px 4px; font-size: 12px; }
+
     .tab.active {
       color: var(--gold);
-      border-color: rgba(239,196,119,.48);
+      border-color: #efc47777;
       background: #302b38;
     }
 
     .panel {
-      min-height: 430px;
+      min-height: 170px;
       padding: 13px;
       border: 1px solid var(--line);
-      border-radius: 19px;
-      background: rgba(27,30,41,.97);
-      box-shadow: 0 16px 40px #0003;
+      border-radius: 16px;
+      background: var(--panel);
     }
 
-    .rooms {
-      display: flex;
-      gap: 7px;
-      overflow-x: auto;
-      padding: 1px 0 12px;
-      scrollbar-width: none;
-    }
-
-    .rooms::-webkit-scrollbar { display: none; }
-
-    .room-btn {
-      flex: 0 0 auto;
-      padding: 9px 11px;
-      font-size: 12px;
-    }
-
-    .room-btn.active {
-      color: var(--text);
-      border-color: var(--cyan);
-      background: rgba(162,221,224,.1);
-    }
-
-    .room-btn.done::after { content: " ✓"; color: var(--green); }
-
-    .scene {
-      height: clamp(220px, 60vw, 330px);
-      position: relative;
-      overflow: hidden;
-      border: 1px solid #444354;
-      border-radius: 15px;
-      background-color: #343545;
-      background-image:
-        linear-gradient(180deg, #10121a44 0%, #10121a11 30%, #10121a99 100%),
-        var(--photo);
-      background-position: center;
-      background-size: cover;
-    }
-
-    .scene-title {
-      position: absolute;
-      z-index: 1;
-      top: 12px;
-      left: 13px;
-      padding: 6px 9px;
-      border-radius: 9px;
-      background: #11131bbd;
-      color: white;
-      font-size: 11px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-
-    .hotspot {
-      position: absolute;
-      z-index: 2;
-      width: 43px;
-      height: 43px;
-      transform: translate(-50%, -50%);
-      border: 2px solid #fff4d5;
-      border-radius: 50%;
-      color: #191820;
-      background: var(--gold);
-      font-weight: 900;
-      cursor: pointer;
-      box-shadow: 0 0 0 5px #efc47738, 0 5px 16px #0009;
-      animation: pulse 1.8s infinite;
-    }
-
-    .hotspot.found {
-      color: var(--green);
-      background: #223b33;
-      border-color: var(--green);
-      box-shadow: 0 0 0 4px #9bd6a322;
-      animation: none;
-    }
-
-    @keyframes pulse {
-      50% { box-shadow: 0 0 0 9px #efc47718, 0 5px 16px #0009; }
-    }
-
-    .hint {
-      margin: 10px 2px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.45;
-    }
-
-    .notice, .deduction, .dialogue {
-      margin-top: 10px;
-      padding: 11px 12px;
-      border: 1px solid rgba(162,221,224,.25);
-      border-radius: 12px;
-      background: rgba(162,221,224,.07);
-      color: #d7eff0;
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .section-title {
-      margin: 3px 0 10px;
+    .panel-title {
+      margin: 1px 0 9px;
       color: var(--gold);
       font-size: 14px;
       font-weight: 850;
@@ -225,25 +203,26 @@
 
     .muted { color: var(--muted); font-size: 12px; line-height: 1.5; }
 
-    .list { display: grid; gap: 8px; }
+    .list { display: grid; gap: 7px; }
 
     .item {
       width: 100%;
-      padding: 12px;
+      padding: 11px;
       text-align: left;
       color: var(--text);
       border: 1px solid var(--line);
-      border-radius: 13px;
+      border-radius: 12px;
       background: var(--raised);
       cursor: pointer;
     }
 
     .item.selected {
       border-color: var(--gold);
-      background: rgba(239,196,119,.1);
+      background: #efc47712;
     }
 
-    .item strong { display: block; font-size: 13px; }
+    .item strong { display: block; font-size: 12px; }
+
     .item small {
       display: block;
       margin-top: 4px;
@@ -254,29 +233,33 @@
 
     .primary {
       width: 100%;
-      margin-top: 11px;
+      margin-top: 10px;
       padding: 12px;
       border: 0;
       border-radius: 12px;
       color: #171820;
       background: var(--gold);
-      font-weight: 850;
+      font-weight: 900;
       cursor: pointer;
     }
 
-    .primary:disabled { opacity: .4; cursor: not-allowed; }
+    .primary:disabled { opacity: .42; cursor: default; }
 
-    .deduction {
-      border-color: rgba(155,214,163,.25);
-      background: rgba(155,214,163,.07);
-      color: #d9efdc;
+    .note, .dialogue {
+      margin-top: 9px;
+      padding: 11px;
+      border: 1px solid #a2dde044;
+      border-radius: 12px;
+      background: #a2dde00d;
+      color: #d7eff0;
       font-size: 12px;
+      line-height: 1.5;
     }
 
-    .dialogue {
-      border-color: rgba(162,221,224,.25);
-      background: rgba(162,221,224,.07);
-      color: #d7eff0;
+    .success {
+      border-color: #9bd6a344;
+      background: #9bd6a30d;
+      color: #d9efdc;
     }
 
     .modal-bg {
@@ -298,20 +281,19 @@
       border: 1px solid var(--line);
       border-radius: 18px;
       background: #20232f;
-      box-shadow: 0 20px 70px #0009;
     }
 
-    .modal h2 { margin: 0 0 6px; font-size: 19px; }
+    .modal h2 { margin: 0 0 5px; font-size: 19px; }
     .modal p { color: var(--muted); font-size: 12px; line-height: 1.45; }
 
     .code {
       width: 100%;
-      margin: 6px 0 2px;
+      margin: 5px 0;
       padding: 12px;
       border: 1px solid var(--line);
       border-radius: 12px;
-      background: #11131b;
       color: var(--gold);
+      background: #11131b;
       font-size: 24px;
       letter-spacing: .4em;
       text-align: center;
@@ -324,23 +306,29 @@
       position: fixed;
       z-index: 9;
       left: 50%;
-      bottom: max(23px, env(safe-area-inset-bottom));
-      transform: translate(-50%, 14px);
+      bottom: max(22px, env(safe-area-inset-bottom));
+      transform: translate(-50%, 12px);
       opacity: 0;
       pointer-events: none;
-      padding: 11px 15px;
-      border-radius: 13px;
-      background: var(--gold);
+      padding: 10px 14px;
+      border-radius: 12px;
       color: #171820;
+      background: var(--gold);
       font-size: 12px;
       font-weight: 850;
       text-align: center;
       transition: .2s ease;
       width: max-content;
-      max-width: calc(100% - 32px);
+      max-width: calc(100% - 28px);
     }
 
     .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (max-width: 380px) {
+      .move { width: 39px; }
+      .dpad { grid-template-columns: repeat(3, 39px); }
+      .interact { min-width: 112px; }
+    }
   </style>
 </head>
 
@@ -355,22 +343,42 @@
     </header>
 
     <div class="mission">
-      <b>Задача:</b> найти пропавший алмаз, восстановить события и выбрать виновного.
-      Осматривай комнаты, собирай улики и проверяй версии.
+      <b>Твоя цель:</b> найти пропавший алмаз, исследовать музей и выяснить,
+      кто отключил охрану. Собирай улики и проверяй версии.
     </div>
 
-    <div class="stats">
-      <span id="clue-count">Улики: 0/9</span>
-      <span id="status">Дело не раскрыто</span>
-    </div>
+    <section class="game-window">
+      <div class="scene-info">
+        <strong id="room-name">Главный зал</strong>
+        <span id="game-stats">Улики: 0/9</span>
+      </div>
+
+      <canvas id="game" width="900" height="520"></canvas>
+
+      <div class="controls">
+        <div class="dpad" aria-label="Управление персонажем">
+          <button class="move up" data-dir="up" aria-label="Вверх">▲</button>
+          <button class="move left" data-dir="left" aria-label="Влево">◀</button>
+          <button class="move down" data-dir="down" aria-label="Вниз">▼</button>
+          <button class="move right" data-dir="right" aria-label="Вправо">▶</button>
+        </div>
+
+        <button class="interact" id="interact" disabled>Идти к объекту</button>
+      </div>
+
+      <div class="help">
+        Нажимай стрелки или WASD, чтобы ходить. Можно нажать на сцену, чтобы идти к месту.
+        Подойди к светящейся точке и нажми «Осмотреть».
+      </div>
+    </section>
 
     <nav class="tabs">
-      <button class="tab active" data-tab="search">🔎 Осмотр</button>
-      <button class="tab" data-tab="board">🧩 Доска</button>
+      <button class="tab active" data-tab="case">🗂 Дело</button>
+      <button class="tab" data-tab="board">🧩 Улики</button>
       <button class="tab" data-tab="interview">🗣 Допрос</button>
     </nav>
 
-    <section class="panel" id="content"></section>
+    <section class="panel" id="panel"></section>
   </main>
 
   <div class="modal-bg" id="modal">
@@ -379,7 +387,7 @@
       <p>Введи четырёхзначный код. Подсказка спрятана в кабинете директора.</p>
       <input class="code" id="code-input" inputmode="numeric" maxlength="4" placeholder="••••">
       <div class="modal-row">
-        <button class="reset" data-action="close-modal">Закрыть</button>
+        <button class="secondary" data-action="close-modal">Закрыть</button>
         <button class="primary" style="margin:0" data-action="submit-code">Проверить</button>
       </div>
       <div id="code-feedback"></div>
@@ -389,310 +397,305 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    const SAVE_KEY = "night-museum-case-v2";
+    (() => {
+      "use strict";
 
-    const clueData = {
-      shards: {
-        title: "Осколки витрины",
-        text: "Большая часть стекла лежит внутри. Витрину разбили снаружи, чтобы инсценировать взлом."
-      },
-      emptyCase: {
-        title: "Пустая подставка",
-        text: "На подставке нет царапин. Алмаз достали аккуратно — у виновного был ключ."
-      },
-      codeNote: {
-        title: "Стикер под столом",
-        text: "На стикере написано: «Перезапуск системы — 04:17»."
-      },
-      schedule: {
-        title: "График смен",
-        text: "В ночь кражи в музее дежурили директор Вера и охранник Лев."
-      },
-      accessLog: {
-        title: "Журнал системы",
-        text: "Охрану отключили вручную в 21:14 — ещё до закрытия музея."
-      },
-      camera: {
-        title: "Запись камеры",
-        text: "На зернистом кадре человек в форме охраны выходит из зала с длинным футляром."
-      },
-      keyLog: {
-        title: "Журнал ключей",
-        text: "Запасной ключ от витрины забрал Лев. Отметки о возврате нет."
-      },
-      footprint: {
-        title: "След у выхода",
-        text: "Свежий след форменного ботинка ведёт к служебному выходу."
-      },
-      ledger: {
-        title: "Страница инвентарной книги",
-        text: "Алмаз проверяли в 20:40. Реставратор Мира записала: «витрина цела»."
-      }
-    };
+      const SAVE_KEY = "night-museum-detective-v3";
+      const canvas = document.getElementById("game");
+      const ctx = canvas.getContext("2d");
+      const panel = document.getElementById("panel");
 
-    const rooms = {
-      gallery: {
-        name: "Главный зал",
-        photo: "https://images.unsplash.com/photo-1561214115-f2f134cc4912?auto=format&fit=crop&w=1400&q=85",
-        objects: [
-          { id: "glass", x: 23, y: 62, icon: "✦", clue: "shards" },
-          { id: "case", x: 72, y: 54, icon: "◇", clue: "emptyCase" }
-        ]
-      },
-      office: {
-        name: "Кабинет директора",
-        photo: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1400&q=85",
-        objects: [
-          { id: "desk", x: 31, y: 62, icon: "▤", clue: "codeNote" },
-          { id: "schedule", x: 75, y: 38, icon: "▦", clue: "schedule" }
-        ]
-      },
-      security: {
-        name: "Пост охраны",
-        photo: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1400&q=85",
-        objects: [
-          { id: "terminal", x: 42, y: 61, icon: "⌨", terminal: true },
-          { id: "camera", x: 76, y: 39, icon: "▣", clue: "camera", locked: true }
-        ]
-      },
-      archive: {
-        name: "Архив музея",
-        photo: "https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1400&q=85",
-        objects: [
-          { id: "ledger", x: 30, y: 56, icon: "▤", clue: "ledger" }
-        ]
-      },
-      corridor: {
-        name: "Служебный коридор",
-        photo: "https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=1400&q=85",
-        objects: [
-          { id: "keys", x: 28, y: 54, icon: "⚿", clue: "keyLog" },
-          { id: "print", x: 76, y: 71, icon: "◉", clue: "footprint" }
-        ]
-      }
-    };
-
-    const suspects = [
-      { id: "lev", name: "Лев", job: "Ночной охранник" },
-      { id: "vera", name: "Вера", job: "Директор музея" },
-      { id: "mira", name: "Мира", job: "Реставратор" }
-    ];
-
-    function freshState() {
-      return {
-        tab: "search",
-        room: "gallery",
-        found: [],
-        selected: [],
-        deductions: [],
-        codeOpen: false,
-        answers: {},
-        result: ""
-      };
-    }
-
-    let state;
-
-    try {
-      state = { ...freshState(), ...JSON.parse(localStorage.getItem(SAVE_KEY) || "{}") };
-    } catch {
-      state = freshState();
-    }
-
-    const content = document.getElementById("content");
-    const modal = document.getElementById("modal");
-    let toastTimer;
-
-    function save() {
-      localStorage.setItem(SAVE_KEY, JSON.stringify(state));
-    }
-
-    function hasClue(id) {
-      return state.found.includes(id);
-    }
-
-    function toast(message) {
-      const element = document.getElementById("toast");
-      element.textContent = message;
-      element.classList.add("show");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => element.classList.remove("show"), 2300);
-    }
-
-    function render() {
-      document.querySelectorAll(".tab").forEach(button => {
-        button.classList.toggle("active", button.dataset.tab === state.tab);
-      });
-
-      document.getElementById("clue-count").textContent =
-        `Улики: ${state.found.length}/${Object.keys(clueData).length}`;
-
-      document.getElementById("status").textContent =
-        state.result.startsWith("ДЕЛО РАСКРЫТО") ? "Дело раскрыто ✓" : "Дело не раскрыто";
-
-      if (state.tab === "search") renderSearch();
-      if (state.tab === "board") renderBoard();
-      if (state.tab === "interview") renderInterview();
-    }
-
-    function renderSearch() {
-      const room = rooms[state.room];
-
-      content.innerHTML = `
-        <div class="rooms">
-          ${Object.entries(rooms).map(([id, value]) => {
-            const finished = value.objects.every(object =>
-              object.terminal || !object.clue || hasClue(object.clue) ||
-              (object.locked && !state.codeOpen)
-            );
-            return `
-              <button class="room-btn ${state.room === id ? "active" : ""} ${finished ? "done" : ""}"
-                data-action="room" data-id="${id}">${value.name}</button>
-            `;
-          }).join("")}
-        </div>
-
-        <div class="scene" style="--photo:url('${room.photo}')">
-          <div class="scene-title">${room.name}</div>
-          ${room.objects.map(object => {
-            const found = object.clue && hasClue(object.clue);
-            const locked = object.locked && !state.codeOpen;
-            return `
-              <button class="hotspot ${found ? "found" : ""}"
-                style="left:${object.x}%;top:${object.y}%"
-                data-action="inspect" data-id="${object.id}"
-                aria-label="Осмотреть объект">
-                ${locked ? "?" : found ? "✓" : object.icon}
-              </button>
-            `;
-          }).join("")}
-        </div>
-
-        <div class="hint">
-          Нажимай на круглые метки на фотографии. В некоторых комнатах есть закрытые объекты.
-        </div>
-      `;
-    }
-
-    function inspect(objectId) {
-      const room = rooms[state.room];
-      const object = room.objects.find(item => item.id === objectId);
-      if (!object) return;
-
-      if (object.terminal) {
-        if (!hasClue("codeNote")) {
-          toast("Сначала найди подсказку к коду в кабинете директора.");
-          return;
+      const clueData = {
+        shards: {
+          title: "Осколки витрины",
+          text: "Большая часть стекла лежит внутри. Витрину разбили снаружи, чтобы подделать взлом."
+        },
+        plinth: {
+          title: "Пустая подставка",
+          text: "Алмаз сняли аккуратно. Виновный знал, как открыть витрину."
+        },
+        codeNote: {
+          title: "Записка под столом",
+          text: "На записке: «Перезапуск системы — 04:17»."
+        },
+        schedule: {
+          title: "График дежурств",
+          text: "В ночь кражи в музее оставались директор Вера и охранник Лев."
+        },
+        accessLog: {
+          title: "Журнал пульта",
+          text: "Охрану выключили вручную в 21:14 — ещё до закрытия музея."
+        },
+        camera: {
+          title: "Кадр с камеры",
+          text: "Человек в форме охраны выходит из зала с длинным футляром."
+        },
+        keyLog: {
+          title: "Журнал ключей",
+          text: "Запасной ключ от витрины получил Лев. Возврат ключа не записан."
+        },
+        footprint: {
+          title: "След у выхода",
+          text: "Свежий след форменного ботинка ведёт к служебному выходу."
+        },
+        ledger: {
+          title: "Книга инвентаризации",
+          text: "В 20:40 реставратор Мира записала, что витрина была цела."
         }
-
-        document.getElementById("code-input").value = "";
-        document.getElementById("code-feedback").innerHTML = "";
-        modal.classList.add("show");
-        return;
-      }
-
-      if (object.locked && !state.codeOpen) {
-        toast("Монитор выключен. Сначала разблокируй пульт.");
-        return;
-      }
-
-      if (object.clue && !hasClue(object.clue)) {
-        state.found.push(object.clue);
-        save();
-        toast(`Найдена улика: ${clueData[object.clue].title}`);
-        render();
-      } else {
-        toast("Ты уже осмотрел это место.");
-      }
-    }
-
-    function renderBoard() {
-      content.innerHTML = `
-        <div class="row">
-          <div class="section-title">Доска расследования</div>
-          <div class="muted">${state.found.length} собрано</div>
-        </div>
-        <p class="muted">Выбери две улики, затем нажми «Сопоставить». Удачные связи добавят вывод в дело.</p>
-
-        <div class="list">
-          ${state.found.length ? state.found.map(id => `
-            <button class="item ${state.selected.includes(id) ? "selected" : ""}"
-              data-action="select-clue" data-id="${id}">
-              <strong>${clueData[id].title}</strong>
-              <small>${clueData[id].text}</small>
-            </button>
-          `).join("") : `<div class="muted">Улик пока нет. Отправляйся на осмотр.</div>`}
-        </div>
-
-        <button class="primary" data-action="match"
-          ${state.selected.length !== 2 ? "disabled" : ""}>
-          Сопоставить выбранные улики
-        </button>
-
-        ${state.deductions.map(item => `<div class="deduction">${item}</div>`).join("")}
-      `;
-    }
-
-    function matchClues() {
-      if (state.selected.length !== 2) return;
-
-      const pair = state.selected.slice().sort().join("|");
-      const combinations = {
-        ["codeNote|accessLog"]: "Подсказка с кодом и журнал показывают: подозреваемый знал систему заранее. Отключение было ручным и произошло до закрытия.",
-        ["camera|accessLog"]: "Камера показывает человека в форме, а журнал — ручное отключение охраны. Эти события связаны.",
-        ["footprint|keyLog"]: "Ключ от витрины забрал Лев. След форменного ботинка ведёт к служебному выходу.",
-        ["emptyCase|shards"]: "Витрину разбили для отвлечения внимания, но алмаз вынули аккуратно ключом.",
-        ["ledger|schedule"]: "Мира записала, что витрина была цела. По графику после закрытия доступ оставался у директора и охранника."
       };
 
-      const result = combinations[pair];
-
-      if (result) {
-        if (!state.deductions.includes(result)) {
-          state.deductions.push(result);
-          toast("Связь найдена — вывод добавлен на доску.");
-        } else {
-          toast("Этот вывод уже есть на доске.");
+      const rooms = {
+        gallery: {
+          name: "Главный зал",
+          color: "#292a3a",
+          objects: [
+            { id: "shards", label: "Осколки стекла", x: 235, y: 355, type: "clue", clue: "shards", icon: "✦" },
+            { id: "plinth", label: "Пустая витрина", x: 610, y: 310, type: "clue", clue: "plinth", icon: "◇" },
+            { id: "officeDoor", label: "Кабинет директора", x: 820, y: 245, type: "door", to: "office", icon: "▣" },
+            { id: "securityDoor", label: "Пост охраны", x: 450, y: 60, type: "door", to: "security", icon: "▣" }
+          ]
+        },
+        office: {
+          name: "Кабинет директора",
+          color: "#45352f",
+          objects: [
+            { id: "note", label: "Записка под столом", x: 250, y: 340, type: "clue", clue: "codeNote", icon: "▤" },
+            { id: "schedule", label: "График дежурств", x: 620, y: 205, type: "clue", clue: "schedule", icon: "▦" },
+            { id: "galleryDoor", label: "Главный зал", x: 75, y: 250, type: "door", to: "gallery", icon: "▣" },
+            { id: "archiveDoor", label: "Архив музея", x: 820, y: 250, type: "door", to: "archive", icon: "▣" }
+          ]
+        },
+        security: {
+          name: "Пост охраны",
+          color: "#29444a",
+          objects: [
+            { id: "terminal", label: "Пульт охраны", x: 450, y: 250, type: "terminal", icon: "⌨" },
+            { id: "monitor", label: "Монитор камер", x: 690, y: 205, type: "camera", icon: "▣" },
+            { id: "galleryDoor", label: "Главный зал", x: 75, y: 250, type: "door", to: "gallery", icon: "▣" },
+            { id: "corridorDoor", label: "Служебный коридор", x: 450, y: 465, type: "door", to: "corridor", icon: "▣" }
+          ]
+        },
+        corridor: {
+          name: "Служебный коридор",
+          color: "#403c34",
+          objects: [
+            { id: "keyLog", label: "Журнал ключей", x: 250, y: 230, type: "clue", clue: "keyLog", icon: "⚿" },
+            { id: "footprint", label: "След ботинка", x: 645, y: 365, type: "clue", clue: "footprint", icon: "◉" },
+            { id: "securityDoor", label: "Пост охраны", x: 75, y: 250, type: "door", to: "security", icon: "▣" },
+            { id: "archiveDoor", label: "Архив музея", x: 820, y: 250, type: "door", to: "archive", icon: "▣" }
+          ]
+        },
+        archive: {
+          name: "Архив музея",
+          color: "#3d3444",
+          objects: [
+            { id: "ledger", label: "Книга инвентаризации", x: 450, y: 275, type: "clue", clue: "ledger", icon: "▤" },
+            { id: "officeDoor", label: "Кабинет директора", x: 75, y: 250, type: "door", to: "office", icon: "▣" },
+            { id: "corridorDoor", label: "Служебный коридор", x: 820, y: 250, type: "door", to: "corridor", icon: "▣" }
+          ]
         }
-      } else {
-        toast("Пока связь неочевидна. Попробуй другую пару улик.");
-      }
+      };
 
-      state.selected = [];
-      save();
-      render();
-    }
-
-    function renderInterview() {
-      const questionButtons = [
-        ["night", "Где ты был в момент кражи?"],
-        ["keys", "Кто брал ключ от витрины?"],
-        ["system", "Что знаешь об отключении охраны?"]
+      const suspects = [
+        { id: "lev", name: "Лев", job: "Ночной охранник" },
+        { id: "vera", name: "Вера", job: "Директор музея" },
+        { id: "mira", name: "Мира", job: "Реставратор" }
       ];
 
-      content.innerHTML = `
-        <div class="section-title">Комната допросов</div>
-        <p class="muted">Выбери подозреваемого, затем задай вопрос. Собранные улики меняют ответы.</p>
+      function freshState() {
+        return {
+          room: "gallery",
+          tab: "case",
+          found: [],
+          codeOpen: false,
+          selectedClues: [],
+          deductions: [],
+          selectedSuspect: "",
+          dialogue: "",
+          result: ""
+        };
+      }
 
-        <div class="list">
-          ${suspects.map(person => `
-            <button class="item ${state.selectedSuspect === person.id ? "selected" : ""}"
-              data-action="suspect" data-id="${person.id}">
-              <strong>${person.name}</strong><small>${person.job}</small>
-            </button>
-          `).join("")}
-        </div>
+      let state;
 
-        <div class="list" style="margin-top:10px">
-          ${questionButtons.map(([id, text]) => `
-            <button class="item" data-action="question" data-id="${id}">${text}</button>
-          `).join("")}
-        </div>
+      try {
+        state = { ...freshState(), ...JSON.parse(localStorage.getItem(SAVE_KEY) || "{}") };
+        if (!rooms[state.room]) state.room = "gallery";
+      } catch {
+        state = freshState();
+      }
 
-        <div class="dialogue">
-          ${state.dialogue || "Выбери подозреваемого и задай вопрос."}
-        </div>
+      const player = { x: 450, y: 420 };
+      const keys = new Set();
+      let moveTarget = null;
+      let activeObject = null;
+      let lastHudUpdate = 0;
+      let toastTimer = 0;
 
-        <div class="section-title" style="margin-top:16px">Предъявить обвинение</div>
-        <div class="list">
-          ${suspects.map(
+      function save() {
+        try {
+          localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+        } catch {
+          // Игра продолжит работать, даже если браузер запретил локальное сохранение.
+        }
+      }
+
+      function hasClue(id) {
+        return state.found.includes(id);
+      }
+
+      function showToast(message) {
+        const element = document.getElementById("toast");
+        element.textContent = message;
+        element.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => element.classList.remove("show"), 2300);
+      }
+
+      function distance(a, b) {
+        return Math.hypot(a.x - b.x, a.y - b.y);
+      }
+
+      function closestObject() {
+        const objects = rooms[state.room].objects;
+        let closest = null;
+        let bestDistance = Infinity;
+
+        for (const object of objects) {
+          const d = distance(player, object);
+          if (d < bestDistance) {
+            bestDistance = d;
+            closest = object;
+          }
+        }
+
+        return bestDistance <= 90 ? closest : null;
+      }
+
+      function updateHud() {
+        activeObject = closestObject();
+
+        document.getElementById("room-name").textContent = rooms[state.room].name;
+        document.getElementById("game-stats").textContent =
+          `Улики: ${state.found.length}/${Object.keys(clueData).length}`;
+
+        const button = document.getElementById("interact");
+
+        if (activeObject) {
+          button.disabled = false;
+          button.textContent = activeObject.type === "door"
+            ? `Войти: ${activeObject.label}`
+            : `Осмотреть: ${activeObject.label}`;
+        } else {
+          button.disabled = true;
+          button.textContent = "Иди к объекту";
+        }
+      }
+
+      function drawRoom() {
+        const room = rooms[state.room];
+
+        const gradient = ctx.createLinearGradient(0, 0, 0, 520);
+        gradient.addColorStop(0, room.color);
+        gradient.addColorStop(1, "#171923");
+
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 900, 520);
+
+        // Стена и пол
+        ctx.fillStyle = "#ffffff08";
+        ctx.fillRect(0, 0, 900, 330);
+
+        ctx.fillStyle = "#151720";
+        ctx.beginPath();
+        ctx.moveTo(0, 330);
+        ctx.lineTo(900, 330);
+        ctx.lineTo(900, 520);
+        ctx.lineTo(0, 520);
+        ctx.closePath();
+        ctx.fill();
+
+        // Перспективные линии пола
+        ctx.strokeStyle = "#ffffff12";
+        ctx.lineWidth = 2;
+        for (let x = -200; x <= 1100; x += 125) {
+          ctx.beginPath();
+          ctx.moveTo(450, 330);
+          ctx.lineTo(x, 520);
+          ctx.stroke();
+        }
+        for (let y = 365; y < 520; y += 38) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(900, y);
+          ctx.stroke();
+        }
+
+        // Верхние лампы
+        for (let x = 130; x < 900; x += 220) {
+          ctx.fillStyle = "#f4d18c22";
+          ctx.fillRect(x - 45, 28, 90, 8);
+          ctx.fillStyle = "#f4d18c88";
+          ctx.fillRect(x - 24, 31, 48, 3);
+        }
+
+        drawRoomDecor();
+
+        for (const object of room.objects) {
+          drawObject(object);
+        }
+
+        drawPlayer();
+      }
+
+      function drawRoomDecor() {
+        if (state.room === "gallery") {
+          // Картины
+          [105, 355, 715].forEach((x, i) => {
+            ctx.fillStyle = "#14151e";
+            ctx.fillRect(x, 115, 115, 112);
+            ctx.strokeStyle = i === 1 ? "#d1ad6a" : "#726a5c";
+            ctx.lineWidth = 6;
+            ctx.strokeRect(x, 115, 115, 112);
+            ctx.fillStyle = ["#4c454f", "#3a5b63", "#6a493c"][i];
+            ctx.fillRect(x + 13, 128, 89, 84);
+            ctx.fillStyle = "#d8c49b66";
+            ctx.beginPath();
+            ctx.arc(x + 58, 160, 19, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        }
+
+        if (state.room === "office") {
+          ctx.fillStyle = "#171921";
+          ctx.fillRect(140, 280, 250, 85);
+          ctx.fillStyle = "#6b4c37";
+          ctx.fillRect(150, 270, 230, 15);
+          ctx.fillRect(170, 365, 15, 65);
+          ctx.fillRect(340, 365, 15, 65);
+          ctx.fillStyle = "#d9c89b";
+          ctx.fillRect(188, 240, 100, 8);
+          ctx.fillRect(510, 100, 250, 125);
+          ctx.strokeStyle = "#e7c77f";
+          ctx.lineWidth = 4;
+          ctx.strokeRect(510, 100, 250, 125);
+        }
+
+        if (state.room === "security") {
+          ctx.fillStyle = "#11141b";
+          ctx.fillRect(170, 125, 560, 145);
+          for (let i = 0; i < 4; i++) {
+            ctx.fillStyle = ["#31565a", "#3c3b52", "#394a42", "#4b3b38"][i];
+            ctx.fillRect(185 + i * 135, 140, 120, 110);
+            ctx.strokeStyle = "#9ad8dc55";
+            ctx.strokeRect(185 + i * 135, 140, 120, 110);
+          }
+          ctx.fillStyle = "#555b68";
+          ctx.fillRect(330, 300, 240, 68);
+          ctx.fillStyle = "#8eb7b5";
+          ctx.fillRect(350, 312, 200, 8);
+        }
+
+        if (state.room === "corridor") {
+          for (let x = 80; x < 900; x += 190) {
+            ctx.f
